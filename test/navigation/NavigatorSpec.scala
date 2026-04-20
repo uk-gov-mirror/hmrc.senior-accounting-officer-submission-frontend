@@ -18,6 +18,7 @@ package navigation
 
 import base.SpecBase
 import controllers.routes
+import models.upload.UploadTemplateDebugData
 import models.{CheckMode, NormalMode, UserAnswers}
 import pages.*
 
@@ -172,6 +173,40 @@ class NavigatorSpec extends SpecBase {
           NormalMode,
           UserAnswers("id")
         ) mustBe routes.SubmitCertificateStartController.onPageLoad()
+      }
+
+      "when on UploadTemplateDebugPage with no parsing errors, must go to submit notification start page" in {
+        val userAnswers =
+          UserAnswers("id")
+            .set(UploadTemplateDebugPage, UploadTemplateDebugData(rows = Seq.empty, errors = Seq.empty))
+            .success
+            .value
+
+        navigator.nextPage(
+          UploadTemplateDebugPage,
+          NormalMode,
+          userAnswers
+        ) mustBe routes.SubmitNotificationStartController.onPageLoad()
+      }
+
+      "when on UploadTemplateDebugPage with parsing errors, must go to upload form page" in {
+        val userAnswers =
+          UserAnswers("id")
+            .set(
+              UploadTemplateDebugPage,
+              UploadTemplateDebugData(
+                rows = Seq.empty,
+                errors = Seq(models.upload.TemplateParseError(9, Some("Company UTR"), "missing_required_value", "x"))
+              )
+            )
+            .success
+            .value
+
+        navigator.nextPage(
+          UploadTemplateDebugPage,
+          NormalMode,
+          userAnswers
+        ) mustBe routes.NotificationUploadFormController.onPageLoad()
       }
     }
 

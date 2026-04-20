@@ -9,6 +9,7 @@ object AppDependencies {
   private val hmrcMongoVersion = "2.7.0"
   private val hmrcPlayFrontend = "12.8.0"
   private val poiVersion       = "5.5.1"
+  private val univocityVersion = "2.9.1"
 
   val compile: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"            %% "bootstrap-frontend-play-30" % bootstrapVersion,
@@ -16,6 +17,7 @@ object AppDependencies {
     "uk.gov.hmrc.mongo"      %% "hmrc-mongo-play-30"         % hmrcMongoVersion,
     "org.apache.poi"          % "poi"                        % poiVersion,
     "org.apache.poi"          % "poi-ooxml"                  % poiVersion,
+    "com.univocity"           % "univocity-parsers"          % univocityVersion,
     "io.github.openhtmltopdf" % "openhtmltopdf-pdfbox"       % "1.1.37"
   )
 

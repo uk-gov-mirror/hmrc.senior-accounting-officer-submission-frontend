@@ -17,9 +17,12 @@
 package controllers
 
 import controllers.actions.*
+import models.upload.UploadTemplateDebugData
+import pages.UploadTemplateDebugPage
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.*
+import repositories.SessionRepository
 import services.UpscanService
 import services.UpscanService.State
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -35,6 +38,7 @@ class NotificationUploadSuccessController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     val controllerComponents: MessagesControllerComponents,
+    sessionRepository: SessionRepository,
     upscanService: UpscanService,
     view: NotificationUploadSuccessView
 )(using ExecutionContext)
@@ -49,12 +53,24 @@ class NotificationUploadSuccessController @Inject() (
         case State.WaitingForUpscan =>
           Future.successful(Ok(view()))
         case State.UploadToUpscanFailed =>
-          ???
+          Future.successful(Redirect(routes.NotificationUploadErrorController.onPageLoad()))
         case State.DownloadFromUpscanFailed(response) =>
-          ???
-        case State.Result(reference, fileContent) =>
-          Logger(getClass).info(fileContent)
-          Future.successful(Redirect(routes.SubmitNotificationStartController.onPageLoad()))
+          Logger(getClass).warn(s"Failed to download uploaded template from Upscan: ${response.status}")
+          Future.successful(Redirect(routes.NotificationUploadErrorController.onPageLoad()))
+        case State.ValidationFailed(errors) =>
+          Logger(getClass).warn(s"Uploaded template failed validation with ${errors.size} error(s)")
+          val debugData = UploadTemplateDebugData(rows = Seq.empty, errors = errors)
+          for {
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(UploadTemplateDebugPage, debugData))
+            _              <- sessionRepository.set(updatedAnswers)
+          } yield Redirect(routes.UploadTemplateDebugController.onPageLoad())
+        case State.Result(reference, rows) =>
+          Logger(getClass).info(s"Uploaded template parsed successfully, reference: $reference, rows: ${rows.size}")
+          val debugData = UploadTemplateDebugData(rows = rows, errors = Seq.empty)
+          for {
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(UploadTemplateDebugPage, debugData))
+            _              <- sessionRepository.set(updatedAnswers)
+          } yield Redirect(routes.UploadTemplateDebugController.onPageLoad())
       }
     }
 

@@ -1,0 +1,13 @@
+"SAO Submission template. List all the companies in your group. Complete one row per company. You can add as many rows as needed.
+",,,,,,,,,,,,,,,,,
+How to complete this template ,,,,,,,,,,,,,,,,,
+"1. Notification columns (A to F): Enter your company details, replace the examples. For company type and status, use the drop down to select one",,,,,,,,,,,,,,,,,
+2. Certificate columns (G to R): Mark tax regimes with an x where the company did not have appropriate tax accounting arrangements. The certificate type will populate automatically.  Leave tax regimes that do not apply to your group blank.,,,,,,,,,,,,,,,,,
+3. Additional information (column R): You must add an explanation if the certificate is qualified and a tax regime is marked x. There is no character limit. You can write as much information as you would normally provide in an email to HMRC.,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,
+,Notification,,,,,Certificate,,,,,,,,,,,
+Company name,Company UTR,Company CRN,Company type,Company status,Financial year end date,Corporation tax,Value added tax,PAYE,Insurance premium tax,Stamp duty land tax,Stamp duty reserve tax,Petroleum revenue tax,Customs Duties,Excise Duties,Bank Levy,Certificate type,Additional information 
+ABC,1273749930,28293039,PLC,Dormant,22/04/2025,,,,,,,,,,,Unqualified,
+DEF ,1234863739,GB168275,LTD,Active,22/04/2025,,,,X,,,,,,,Qualified,"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec velit diam, varius quis nunc non, congue convallis ligula. In tellus mauris, tincidunt sed tincidunt a, congue eget risus. Nullam ullamcorper interdum urna, vitae imperdiet libero. Sed ut leo lacinia, tempor massa sit amet, iaculis quam. Sed elementum lacinia leo in laoreet. Aenean dignissim justo tortor, sit amet vestibulum mi aliquet non. Vestibulum aliquet dui orci, id consectetur lectus eleifend ut. Vivamus nisi lorem, egestas vitae tellus a, semper fringilla metus. Aliquam non porttitor tortor. Nulla ut laoreet tellus. Vivamus mattis sem ut cursus dapibus. Praesent ante ligula, sodales ut sapien eu, tincidunt malesuada massa. Proin at varius diam."
+gshs,2349837343,,LTD,Active,22/05/2025,,,,,,,,x,,,Qualified,
+AKA,1383002-02,82028373,PLC,,,,,,,,,,,,,Unqualified,

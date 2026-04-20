@@ -1,0 +1,110 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@this(
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukButton: GovukButton
+)
+
+@(debugData: models.upload.UploadTemplateDebugData)(using request: Request[?], messages: Messages)
+
+@asDisplay(value: Option[String]) = {
+    @value.getOrElse("-")
+}
+
+@asDisplayCrn(value: Option[models.upload.CompanyCrn]) = {
+    @value.map(_.value).getOrElse("-")
+}
+
+@layout(pageTitle = titleNoForm(messages("uploadTemplateDebug.title"))) {
+
+    <span class="govuk-caption-m">@messages("uploadTemplateDebug.caption")</span>
+    <h1 class="govuk-heading-xl">@messages("uploadTemplateDebug.heading")</h1>
+    <p class="govuk-body">@messages("uploadTemplateDebug.paragraph1")</p>
+    <p class="govuk-body">@messages("uploadTemplateDebug.paragraph2", debugData.rows.size.toString)</p>
+    <p class="govuk-body">
+        @Html(messages("uploadTemplateDebug.paragraph3WithLink", routes.NotificationUploadFormController.onPageLoad().url))
+    </p>
+
+    <h2 class="govuk-heading-m">@messages("uploadTemplateDebug.parsedData.heading")</h2>
+
+    <table class="govuk-table govuk-!-font-size-16">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">@messages("uploadTemplateDebug.table.companyName")</th>
+                <th scope="col" class="govuk-table__header">@messages("uploadTemplateDebug.table.companyUtr")</th>
+                <th scope="col" class="govuk-table__header">@messages("uploadTemplateDebug.table.companyCrn")</th>
+                <th scope="col" class="govuk-table__header">@messages("uploadTemplateDebug.table.companyType")</th>
+                <th scope="col" class="govuk-table__header">@messages("uploadTemplateDebug.table.companyStatus")</th>
+                <th scope="col" class="govuk-table__header">@messages("uploadTemplateDebug.table.financialYearEndDate")</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            @if(debugData.rows.isEmpty) {
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell" colspan="6">@messages("uploadTemplateDebug.parsedData.empty")</td>
+                </tr>
+            } else {
+                @for(row <- debugData.rows) {
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">@row.notification.companyName</td>
+                        <td class="govuk-table__cell">@row.notification.companyUtr.value</td>
+                        <td class="govuk-table__cell">@asDisplayCrn(row.notification.companyCrn)</td>
+                        <td class="govuk-table__cell">@row.notification.companyType</td>
+                        <td class="govuk-table__cell">@row.notification.companyStatus</td>
+                        <td class="govuk-table__cell">@row.notification.financialYearEndDateDisplay</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <h2 class="govuk-heading-m">@messages("uploadTemplateDebug.errors.heading")</h2>
+
+    <table class="govuk-table govuk-!-font-size-16">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">@messages("uploadTemplateDebug.errors.line")</th>
+                <th scope="col" class="govuk-table__header">@messages("uploadTemplateDebug.errors.column")</th>
+                <th scope="col" class="govuk-table__header">@messages("uploadTemplateDebug.errors.code")</th>
+                <th scope="col" class="govuk-table__header">@messages("uploadTemplateDebug.errors.message")</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            @if(debugData.errors.isEmpty) {
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell" colspan="4">@messages("uploadTemplateDebug.errors.none")</td>
+                </tr>
+            } else {
+                @for(error <- debugData.errors) {
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">@error.line</td>
+                        <td class="govuk-table__cell">@asDisplay(error.column)</td>
+                        <td class="govuk-table__cell">@error.code</td>
+                        <td class="govuk-table__cell">@error.message</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    @formHelper(action = routes.UploadTemplateDebugController.onSubmit()) {
+        @govukButton(
+            ButtonViewModel(messages("uploadTemplateDebug.continue").toText).withAttribute("id", "continue")
+        )
+    }
+}

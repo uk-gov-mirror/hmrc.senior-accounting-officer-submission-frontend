@@ -16,6 +16,8 @@ GET         /notification/template/download                           controller
 GET         /notification/upload                                      controllers.NotificationUploadFormController.onPageLoad()
 GET         /notification/upload/error                                controllers.NotificationUploadErrorController.onPageLoad()
 GET         /notification/upload/success                              controllers.NotificationUploadSuccessController.onPageLoad(key: Option[String])
+GET         /notification/upload/debug                                controllers.UploadTemplateDebugController.onPageLoad()
+POST        /notification/upload/debug                                controllers.UploadTemplateDebugController.onSubmit()
 
 GET         /notification/guidance                                    controllers.NotificationGuidanceController.onPageLoad()
 POST        /notification/guidance                                    controllers.NotificationGuidanceController.onSubmit()
@@ -77,4 +79,3 @@ GET         /certificate/change-declaration                           controller
 POST        /certificate/change-declaration                           controllers.CertificateSubmissionDeclarationController.onSubmit(mode: Mode = CheckMode)
 
 GET         /certificate/confirmation                                 controllers.CertificateConfirmationController.onPageLoad()
-

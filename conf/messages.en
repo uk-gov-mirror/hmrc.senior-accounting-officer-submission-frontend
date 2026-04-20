@@ -228,6 +228,46 @@ certificateConfirmation.heading = certificateConfirmation
 
 notificationUploadError.title = notificationUploadError
 notificationUploadError.heading = notificationUploadError
+notificationUploadError.validation.invalidSectionRow = The upload template section row is invalid.
+notificationUploadError.validation.headerMismatch = The upload template headers do not match.
+notificationUploadError.validation.missingRequiredValue = A required value is missing in the uploaded template.
+notificationUploadError.validation.invalidEnumValue = A value in the uploaded template is not valid.
+notificationUploadError.validation.invalidCertificateType = Certificate type must be Qualified, Unqualified or blank.
 
 notificationUploadSuccess.title = notificationUploadSuccess
 notificationUploadSuccess.heading = notificationUploadSuccess
+
+uploadTemplateDebug.title = Review the companies in your notification
+uploadTemplateDebug.caption = Submit a notification
+uploadTemplateDebug.heading = Review the companies in your notification
+uploadTemplateDebug.paragraph1 = This list is taken from the notification details in the submission template you uploaded.
+uploadTemplateDebug.paragraph2 = There were {0} companies in this upload for the financial year.
+uploadTemplateDebug.paragraph3WithLink = If this is not correct, <a class="govuk-link" href="{0}">upload an updated submission template</a> before continuing.
+uploadTemplateDebug.parsedData.heading = Notification companies
+uploadTemplateDebug.parsedData.empty = No parsed rows.
+uploadTemplateDebug.errors.heading = Upload parsing errors
+uploadTemplateDebug.errors.none = No parse errors.
+uploadTemplateDebug.errors.line = Line
+uploadTemplateDebug.errors.column = Column
+uploadTemplateDebug.errors.code = Code
+uploadTemplateDebug.errors.message = Message
+uploadTemplateDebug.continue = Continue
+uploadTemplateDebug.table.row = Row
+uploadTemplateDebug.table.companyName = Company name
+uploadTemplateDebug.table.companyUtr = UTR
+uploadTemplateDebug.table.companyCrn = CRN
+uploadTemplateDebug.table.companyType = Type
+uploadTemplateDebug.table.companyStatus = Status
+uploadTemplateDebug.table.financialYearEndDate = Financial year end
+uploadTemplateDebug.table.corporationTax = Corporation tax
+uploadTemplateDebug.table.valueAddedTax = Value added tax
+uploadTemplateDebug.table.paye = PAYE
+uploadTemplateDebug.table.insurancePremiumTax = Insurance premium tax
+uploadTemplateDebug.table.stampDutyLandTax = Stamp duty land tax
+uploadTemplateDebug.table.stampDutyReserveTax = Stamp duty reserve tax
+uploadTemplateDebug.table.petroleumRevenueTax = Petroleum revenue tax
+uploadTemplateDebug.table.customsDuties = Customs Duties
+uploadTemplateDebug.table.exciseDuties = Excise Duties
+uploadTemplateDebug.table.bankLevy = Bank Levy
+uploadTemplateDebug.table.certificateType = Certificate type
+uploadTemplateDebug.table.additionalInformation = Additional information
