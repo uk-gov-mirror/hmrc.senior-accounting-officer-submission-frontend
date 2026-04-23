@@ -22,6 +22,8 @@ import models.upload.{ParsedSubmissionRow, TemplateParseError, TemplateParseResu
 import models.{NotificationUploadState, UserAnswers}
 import pages.NotificationUploadStatePage
 import play.api.http.Status.OK
+import play.api.i18n.{Messages, MessagesApi}
+import services.CSVParser.UploadTemplateCsvParser
 import services.UpscanService.*
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
@@ -31,27 +33,34 @@ import javax.inject.Inject
 
 class UpscanService @Inject() (
     downloadConnector: UpscanDownloadConnector,
+    messagesApi: MessagesApi,
     uploadTemplateCsvParser: UploadTemplateCsvParser
 )(using ExecutionContext) {
 
-  def fileUploadState(userAnswers: UserAnswers, reference: Option[String])(using hc: HeaderCarrier): Future[State] =
+  def fileUploadState(
+      userAnswers: UserAnswers,
+      reference: Option[String],
+      messages: Messages = messagesApi.preferred(Seq.empty)
+  )(using hc: HeaderCarrier): Future[State] =
     userAnswers.get(NotificationUploadStatePage).fold(Future.successful(State.NoReference)) { uploadState =>
       reference match {
         case Some(expectedReference) if uploadState.reference != expectedReference =>
           Future.successful(State.NoReference)
         case _ =>
-          fileUploadState(uploadState)
+          fileUploadState(uploadState, messages)
       }
     }
 
-  private def fileUploadState(uploadState: NotificationUploadState)(using hc: HeaderCarrier): Future[State] =
+  private def fileUploadState(uploadState: NotificationUploadState, messages: Messages)(using
+      hc: HeaderCarrier
+  ): Future[State] =
     checkUploadState(uploadState).flatMap {
       _.fold(
         state => Future.successful(state),
         { case InterimResult(reference, downloadUrl) =>
           downloadConnector.download(downloadUrl).map {
             case HttpResponse(OK, body, _) =>
-              uploadTemplateCsvParser.parse(body) match {
+              uploadTemplateCsvParser.parse(body, messages) match {
                 case TemplateParseResult.Valid(rows) =>
                   State.Result(reference, rows)
                 case TemplateParseResult.Invalid(errors) =>

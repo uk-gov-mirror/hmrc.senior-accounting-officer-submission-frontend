@@ -263,3 +263,14 @@ uploadTemplateTableError.errors.column = Column
 uploadTemplateTableError.errors.code = Code
 uploadTemplateTableError.errors.message = Message
 uploadTemplateTableError.continue = Upload another file
+
+uploadTemplateCsvParser.error.templateFile = The selected file must use the template
+uploadTemplateCsvParser.error.companyName = Enter a valid company name. Maximum 105 characters.
+uploadTemplateCsvParser.error.companyUtr = Enter a valid Company UTR. It must be 10 digits long.
+uploadTemplateCsvParser.error.companyCrn = Enter a valid Company Registration Number (CRN). It must be 8 characters
+uploadTemplateCsvParser.error.companyType = Select or enter a valid company type, for example PLC or LTD
+uploadTemplateCsvParser.error.companyStatus = Select or enter a valid company status, for example Active, Administration, Liquidation, Dormant
+uploadTemplateCsvParser.error.financialYearEndDate = Enter a valid financial year end date in the format DD/MM/YYYY.
+uploadTemplateCsvParser.error.taxRegime = Enter 'x' if the company is qualified for this tax regime, or leave blank if unqualified.
+uploadTemplateCsvParser.error.certificateType = Only 'unqualified' or 'qualified' can be entered in this field. 'Qualified' will be added automatically if you enter an 'x' against a tax regime in columns G to P
+uploadTemplateCsvParser.error.additionalInformation = Explain why the certificate is qualified and a tax regime has been selected.

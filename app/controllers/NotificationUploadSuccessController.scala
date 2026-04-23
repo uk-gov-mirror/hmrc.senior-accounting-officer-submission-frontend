@@ -17,6 +17,7 @@
 package controllers
 
 import controllers.actions.*
+import models.requests.DataRequest
 import models.upload.UploadTemplateTableData
 import pages.UploadTemplateTablePage
 import play.api.Logger
@@ -47,7 +48,7 @@ class NotificationUploadSuccessController @Inject() (
 
   def onPageLoad(key: Option[String]): Action[AnyContent] =
     (identify andThen getData andThen requireData).async { implicit request =>
-      upscanService.fileUploadState(request.userAnswers, key).flatMap {
+      upscanService.fileUploadState(request.userAnswers, key, messagesApi.preferred(request)).flatMap {
         case State.NoReference =>
           Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         case State.WaitingForUpscan =>
@@ -59,19 +60,26 @@ class NotificationUploadSuccessController @Inject() (
           Future.successful(Redirect(routes.NotificationUploadErrorController.onPageLoad()))
         case State.ValidationFailed(errors) =>
           Logger(getClass).warn(s"Uploaded template failed validation with ${errors.size} error(s)")
-          val tableData = UploadTemplateTableData(rows = Seq.empty, errors = errors)
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(UploadTemplateTablePage, tableData))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(routes.UploadTemplateTableErrorController.onPageLoad())
+          saveTableDataAndRedirect(
+            UploadTemplateTableData(rows = Seq.empty, errors = errors),
+            routes.UploadTemplateTableErrorController.onPageLoad()
+          )
         case State.Result(reference, rows) =>
           Logger(getClass).info(s"Uploaded template parsed successfully, reference: $reference, rows: ${rows.size}")
-          val tableData = UploadTemplateTableData(rows = rows, errors = Seq.empty)
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(UploadTemplateTablePage, tableData))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(routes.UploadTemplateTableController.onPageLoad())
+          saveTableDataAndRedirect(
+            UploadTemplateTableData(rows = rows, errors = Seq.empty),
+            routes.UploadTemplateTableController.onPageLoad()
+          )
       }
     }
+
+  private def saveTableDataAndRedirect(
+      tableData: UploadTemplateTableData,
+      redirectTo: Call
+  )(using request: DataRequest[AnyContent]): Future[Result] =
+    for {
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(UploadTemplateTablePage, tableData))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield Redirect(redirectTo)
 
 }

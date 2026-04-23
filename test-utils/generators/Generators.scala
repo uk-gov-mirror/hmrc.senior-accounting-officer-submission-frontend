@@ -26,8 +26,8 @@ trait Generators extends ModelGenerators {
 
   given dontShrink: Shrink[String] = Shrink.shrinkAny
 
-  val maxEmailLength = 254
-  val specialChars   = List('<', '>', '&')
+  val maxEmailLength           = 254
+  val specialChars: List[Char] = List('<', '>', '&')
 
   def genIntersperseString(gen: Gen[String], value: String, frequencyV: Int = 1, frequencyN: Int = 10): Gen[String] = {
 

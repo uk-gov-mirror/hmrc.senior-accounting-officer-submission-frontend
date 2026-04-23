@@ -28,8 +28,10 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import pages.NotificationUploadStatePage
 import play.api.Application
 import play.api.http.Status.{BAD_REQUEST, OK}
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import services.CSVParser.UploadTemplateCsvParser
 import services.UpscanService.State
 import services.UpscanServiceSpec.*
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -134,7 +136,7 @@ class UpscanServiceSpec extends SpecBase with GuiceOneAppPerSuite with BeforeAnd
       when(mockUpscanDownloadConnector.download(any())(using any())).thenReturn(
         Future.successful(testResponse)
       )
-      when(mockUploadTemplateCsvParser.parse(any())).thenReturn(TemplateParseResult.Valid(parsedRows))
+      when(mockUploadTemplateCsvParser.parse(any(), any[Messages])).thenReturn(TemplateParseResult.Valid(parsedRows))
 
       val result = SUT
         .fileUploadState(
@@ -153,7 +155,7 @@ class UpscanServiceSpec extends SpecBase with GuiceOneAppPerSuite with BeforeAnd
       result mustBe State.Result(testFileReference, parsedRows)
 
       verify(mockUpscanDownloadConnector, times(1)).download(meq(testDownloadUrl))(using any())
-      verify(mockUploadTemplateCsvParser, times(1)).parse(meq(testFileContent))
+      verify(mockUploadTemplateCsvParser, times(1)).parse(meq(testFileContent), any[Messages])
     }
 
     "must return State.ValidationFailed when the downloaded CSV is invalid" in {
@@ -170,7 +172,7 @@ class UpscanServiceSpec extends SpecBase with GuiceOneAppPerSuite with BeforeAnd
       when(mockUpscanDownloadConnector.download(any())(using any())).thenReturn(
         Future.successful(testResponse)
       )
-      when(mockUploadTemplateCsvParser.parse(any())).thenReturn(TemplateParseResult.Invalid(parseErrors))
+      when(mockUploadTemplateCsvParser.parse(any(), any[Messages])).thenReturn(TemplateParseResult.Invalid(parseErrors))
 
       val result = SUT
         .fileUploadState(
@@ -189,7 +191,7 @@ class UpscanServiceSpec extends SpecBase with GuiceOneAppPerSuite with BeforeAnd
       result mustBe State.ValidationFailed(parseErrors)
 
       verify(mockUpscanDownloadConnector, times(1)).download(meq(testDownloadUrl))(using any())
-      verify(mockUploadTemplateCsvParser, times(1)).parse(meq(testFileContent))
+      verify(mockUploadTemplateCsvParser, times(1)).parse(meq(testFileContent), any[Messages])
     }
 
     "must return State.DownloadFromUpscanFailed when the file upload is completed but the file download from upscan fails" in {

@@ -19,12 +19,14 @@ package services
 import base.SpecBase
 import models.upload.*
 import models.upload.TemplateParseResult.{Invalid, Valid}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import services.CSVParser.UploadTemplateCsvParser
 
 import java.time.LocalDate
 
-class UploadTemplateCsvParserSpec extends SpecBase {
+class UploadTemplateCsvParserSpec extends SpecBase with GuiceOneAppPerSuite {
 
-  private val parser = new UploadTemplateCsvParser()
+  private val parser = app.injector.instanceOf[UploadTemplateCsvParser]
 
   private def parsedRow(
       companyName: String,
