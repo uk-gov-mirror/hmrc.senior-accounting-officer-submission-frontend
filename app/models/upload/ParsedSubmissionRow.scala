@@ -19,9 +19,10 @@ package models.upload
 import play.api.libs.json.*
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
 import java.time.format.DateTimeParseException
 import java.time.format.ResolverStyle
+import java.time.temporal.ChronoField
 
 final case class ParsedSubmissionRow(
     notification: NotificationFields,
@@ -46,7 +47,11 @@ final case class NotificationFields(
 
 object NotificationFields {
   private[upload] val JsonDateFormatter =
-    DateTimeFormatter.ofPattern("dd/MM/yyyy").withResolverStyle(ResolverStyle.SMART)
+    DateTimeFormatterBuilder()
+      .appendPattern("dd/MM/yyyy")
+      .parseDefaulting(ChronoField.ERA, 1)
+      .toFormatter
+      .withResolverStyle(ResolverStyle.STRICT)
 
   given Format[LocalDate] = Format(
     Reads {
@@ -70,7 +75,7 @@ object CompanyUtr {
   private val CompanyUtrRegex = "^[0-9]{10}$".r
 
   def fromString(value: String): Option[CompanyUtr] =
-    Option.when(CompanyUtrRegex.matches(value))(CompanyUtr(value))
+    Option.when(CompanyUtrRegex.matches(value.trim))(CompanyUtr(value.trim))
 
   given Format[CompanyUtr] = Format(
     Reads {
@@ -86,10 +91,10 @@ object CompanyUtr {
 final case class CompanyCrn(value: String)
 
 object CompanyCrn {
-  private val CompanyCrnRegex = "^[A-Za-z0-9]{1,8}$".r
+  private val CompanyCrnRegex = "^[A-Za-z0-9]{8}$".r
 
   def fromString(value: String): Option[CompanyCrn] =
-    Option.when(CompanyCrnRegex.matches(value))(CompanyCrn(value))
+    Option.when(CompanyCrnRegex.matches(value.trim))(CompanyCrn(value.trim))
 
   given Format[CompanyCrn] = Format(
     Reads {
@@ -128,10 +133,10 @@ enum CompanyType {
 
 object CompanyType {
   def fromString(value: String): Option[CompanyType] =
-    value match {
-      case "LTD" => Some(CompanyType.LTD)
-      case "PLC" => Some(CompanyType.PLC)
-      case _     => None
+    value.trim match {
+      case normalized if normalized.equalsIgnoreCase("LTD") => Some(CompanyType.LTD)
+      case normalized if normalized.equalsIgnoreCase("PLC") => Some(CompanyType.PLC)
+      case _                                                => None
     }
 
   given Format[CompanyType] = enumFormat(fromString)
@@ -146,12 +151,12 @@ enum CompanyStatus {
 
 object CompanyStatus {
   def fromString(value: String): Option[CompanyStatus] =
-    value match {
-      case "Active"         => Some(CompanyStatus.Active)
-      case "Dormant"        => Some(CompanyStatus.Dormant)
-      case "Administration" => Some(CompanyStatus.Administration)
-      case "Liquidation"    => Some(CompanyStatus.Liquidation)
-      case _                => None
+    value.trim match {
+      case normalized if normalized.equalsIgnoreCase("Active")         => Some(CompanyStatus.Active)
+      case normalized if normalized.equalsIgnoreCase("Dormant")        => Some(CompanyStatus.Dormant)
+      case normalized if normalized.equalsIgnoreCase("Administration") => Some(CompanyStatus.Administration)
+      case normalized if normalized.equalsIgnoreCase("Liquidation")    => Some(CompanyStatus.Liquidation)
+      case _                                                           => None
     }
 
   given Format[CompanyStatus] = enumFormat(fromString)
@@ -163,14 +168,31 @@ enum CertificateType {
 }
 
 object CertificateType {
-  def fromString(value: String): Option[CertificateType] =
+  def serialized(value: CertificateType): String =
     value match {
-      case "Qualified"   => Some(CertificateType.Qualified)
-      case "Unqualified" => Some(CertificateType.Unqualified)
-      case _             => None
+      case CertificateType.Qualified   => "qualified"
+      case CertificateType.Unqualified => "unqualified"
     }
 
-  given Format[CertificateType] = enumFormat(fromString)
+  def fromString(value: String): Option[CertificateType] =
+    value.trim match {
+      case normalized if normalized.equalsIgnoreCase("Qualified")   => Some(CertificateType.Qualified)
+      case normalized if normalized.equalsIgnoreCase("Unqualified") => Some(CertificateType.Unqualified)
+      case _                                                        => None
+    }
+
+  given Format[CertificateType] = Format(
+    Reads[CertificateType] {
+      case JsString(value) =>
+        fromString(value) match {
+          case Some(parsed) => JsSuccess(parsed)
+          case None         => JsError(s"Unknown enum value: $value")
+        }
+      case _ =>
+        JsError("Expected JSON string")
+    },
+    Writes[CertificateType](value => JsString(serialized(value)))
+  )
 }
 
 private def enumFormat[T](lookup: String => Option[T]): Format[T] =

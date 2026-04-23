@@ -17,42 +17,39 @@
 package controllers
 
 import controllers.actions.*
-import models.NormalMode
-import navigation.Navigator
-import pages.UploadTemplateDebugPage
+import pages.UploadTemplateTablePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.UploadTemplateDebugView
+import views.html.UploadTemplateTableView
 
 import javax.inject.Inject
 
-class UploadTemplateDebugController @Inject() (
+class UploadTemplateTableController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    navigator: Navigator,
     val controllerComponents: MessagesControllerComponents,
-    view: UploadTemplateDebugView
+    view: UploadTemplateTableView
 ) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     request.userAnswers
-      .get(UploadTemplateDebugPage)
+      .get(UploadTemplateTablePage)
       .fold(
         Redirect(routes.JourneyRecoveryController.onPageLoad())
-      ) { debugData =>
-        Ok(view(debugData))
+      ) { tableData =>
+        Ok(view(tableData))
       }
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     request.userAnswers
-      .get(UploadTemplateDebugPage)
+      .get(UploadTemplateTablePage)
       .fold(
         Redirect(routes.JourneyRecoveryController.onPageLoad())
-      )(_ => Redirect(navigator.nextPage(UploadTemplateDebugPage, NormalMode, request.userAnswers)))
+      )(_ => Redirect(routes.SubmitNotificationStartController.onPageLoad()))
   }
 }

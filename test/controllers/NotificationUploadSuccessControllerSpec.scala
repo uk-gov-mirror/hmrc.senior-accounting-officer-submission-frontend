@@ -180,7 +180,7 @@ class NotificationUploadSuccessControllerSpec extends SpecBase with BeforeAndAft
     }
 
     "when UpscanService returns State.ValidationFailed" - {
-      "must redirect to upload debug page" in {
+      "must redirect to upload table error page" in {
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
         when(mockUpscanService.fileUploadState(any[UserAnswers], any[Option[String]])(using any())).thenReturn(
@@ -205,7 +205,7 @@ class NotificationUploadSuccessControllerSpec extends SpecBase with BeforeAndAft
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe routes.UploadTemplateDebugController.onPageLoad().url
+          redirectLocation(result).value mustBe routes.UploadTemplateTableErrorController.onPageLoad().url
 
           verify(mockUpscanService, times(1)).fileUploadState(any[UserAnswers], meq(Some(testFileReference)))(using
             any()
@@ -216,7 +216,7 @@ class NotificationUploadSuccessControllerSpec extends SpecBase with BeforeAndAft
     }
 
     "when UpscanService returns State.Result" - {
-      "must redirect to upload debug page" in {
+      "must redirect to upload table page" in {
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
         when(mockUpscanService.fileUploadState(any[UserAnswers], any[Option[String]])(using any())).thenReturn(
@@ -232,7 +232,7 @@ class NotificationUploadSuccessControllerSpec extends SpecBase with BeforeAndAft
           application.injector.instanceOf[NotificationUploadSuccessView]
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).get mustBe routes.UploadTemplateDebugController.onPageLoad().url
+          redirectLocation(result).get mustBe routes.UploadTemplateTableController.onPageLoad().url
 
           verify(mockUpscanService, times(1)).fileUploadState(any[UserAnswers], meq(Some(testFileReference)))(using
             any()

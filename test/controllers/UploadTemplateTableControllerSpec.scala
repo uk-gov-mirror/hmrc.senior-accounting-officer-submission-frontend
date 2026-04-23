@@ -18,21 +18,16 @@ package controllers
 
 import base.SpecBase
 import models.upload.*
-import navigation.{FakeNavigator, Navigator}
-import pages.UploadTemplateDebugPage
-import play.api.inject.bind
-import play.api.mvc.Call
+import pages.UploadTemplateTablePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import views.html.UploadTemplateDebugView
+import views.html.UploadTemplateTableView
 
 import java.time.LocalDate
 
-class UploadTemplateDebugControllerSpec extends SpecBase {
+class UploadTemplateTableControllerSpec extends SpecBase {
 
-  def onwardRoute: Call = Call("GET", "/foo")
-
-  private val debugData = UploadTemplateDebugData(
+  private val tableData = UploadTemplateTableData(
     rows = Seq(
       ParsedSubmissionRow(
         notification = NotificationFields(
@@ -62,46 +57,43 @@ class UploadTemplateDebugControllerSpec extends SpecBase {
     errors = Seq.empty
   )
 
-  private val populatedAnswers = emptyUserAnswers.set(UploadTemplateDebugPage, debugData).success.value
+  private val populatedAnswers = emptyUserAnswers.set(UploadTemplateTablePage, tableData).success.value
 
-  "UploadTemplateDebug Controller" - {
+  "UploadTemplateTable Controller" - {
 
     "must return OK and the correct view for a GET" in {
       val application = applicationBuilder(userAnswers = Some(populatedAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.UploadTemplateDebugController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.UploadTemplateTableController.onPageLoad().url)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[UploadTemplateDebugView]
+        val view = application.injector.instanceOf[UploadTemplateTableView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(debugData)(using request, messages(application)).toString
+        contentAsString(result) mustEqual view(tableData)(using request, messages(application)).toString
       }
     }
 
-    "must redirect to the next page for a POST" in {
-      val application =
-        applicationBuilder(userAnswers = Some(populatedAnswers))
-          .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
-          .build()
+    "must redirect to submit notification start page for a POST" in {
+      val application = applicationBuilder(userAnswers = Some(populatedAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(POST, routes.UploadTemplateDebugController.onSubmit().url)
+        val request = FakeRequest(POST, routes.UploadTemplateTableController.onSubmit().url)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
+        redirectLocation(result).value mustEqual routes.SubmitNotificationStartController.onPageLoad().url
       }
     }
 
-    "must redirect to Journey Recovery for GET when debug data is missing" in {
+    "must redirect to Journey Recovery for GET when table data is missing" in {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.UploadTemplateDebugController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.UploadTemplateTableController.onPageLoad().url)
 
         val result = route(application, request).value
 
@@ -114,7 +106,7 @@ class UploadTemplateDebugControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(POST, routes.UploadTemplateDebugController.onSubmit().url)
+        val request = FakeRequest(POST, routes.UploadTemplateTableController.onSubmit().url)
 
         val result = route(application, request).value
 

@@ -20,16 +20,16 @@ import base.ViewSpecBase
 import models.upload.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import views.UploadTemplateDebugViewSpec.*
-import views.html.UploadTemplateDebugView
+import views.UploadTemplateTableViewSpec.*
+import views.html.UploadTemplateTableView
 
 import java.time.LocalDate
 
-class UploadTemplateDebugViewSpec extends ViewSpecBase[UploadTemplateDebugView] {
+class UploadTemplateTableViewSpec extends ViewSpecBase[UploadTemplateTableView] {
 
-  private def generateView(): Document = Jsoup.parse(SUT(debugData).toString)
+  private def generateView(): Document = Jsoup.parse(SUT(tableData).toString)
 
-  "UploadTemplateDebugView" - {
+  "UploadTemplateTableView" - {
     val doc: Document = generateView()
 
     doc.createTestsWithStandardPageElements(
@@ -40,12 +40,12 @@ class UploadTemplateDebugViewSpec extends ViewSpecBase[UploadTemplateDebugView] 
       hasError = false
     )
 
-    "must render parsed data and error tables" in {
+    "must render parsed data table" in {
       val tableHeaders = doc.select("th.govuk-table__header")
-      tableHeaders.size() must be >= 10
+      tableHeaders.size() must be >= 6
 
       val tableRows = doc.select("tbody.govuk-table__body tr")
-      tableRows.size() must be >= 2
+      tableRows.size() must be >= 1
     }
 
     "must render company table headings without pagination controls" in {
@@ -60,11 +60,11 @@ class UploadTemplateDebugViewSpec extends ViewSpecBase[UploadTemplateDebugView] 
   }
 }
 
-object UploadTemplateDebugViewSpec {
+object UploadTemplateTableViewSpec {
   val pageHeading = "Review the companies in your notification"
   val pageTitle   = "Review the companies in your notification"
 
-  val debugData: UploadTemplateDebugData = UploadTemplateDebugData(
+  val tableData: UploadTemplateTableData = UploadTemplateTableData(
     rows = Seq(
       ParsedSubmissionRow(
         notification = NotificationFields(
@@ -91,13 +91,6 @@ object UploadTemplateDebugViewSpec {
         )
       )
     ),
-    errors = Seq(
-      TemplateParseError(
-        line = 9,
-        column = Some("Company UTR"),
-        code = "missing_required_value",
-        message = "Line 9 Company UTR is required."
-      )
-    )
+    errors = Seq.empty
   )
 }

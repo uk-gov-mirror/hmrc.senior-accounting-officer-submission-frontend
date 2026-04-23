@@ -25,9 +25,10 @@ import scala.util.Try
 
 import java.io.StringReader
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
 import java.time.format.DateTimeParseException
 import java.time.format.ResolverStyle
+import java.time.temporal.ChronoField
 import javax.inject.Inject
 
 import UploadTemplateCsvParser.*
@@ -84,7 +85,7 @@ class UploadTemplateCsvParser @Inject() {
             line = SectionLineNumber,
             column = None,
             code = "missing_section_row",
-            message = s"Line $SectionLineNumber is missing section headers."
+            message = TemplateFileErrorMessage
           )
         )
       case Some(row) =>
@@ -97,7 +98,7 @@ class UploadTemplateCsvParser @Inject() {
               line = SectionLineNumber,
               column = Some("Notification"),
               code = "invalid_section_row",
-              message = s"Line $SectionLineNumber must contain '$NotificationSectionExpected' in column B."
+              message = TemplateFileErrorMessage
             )
           ),
           Option.when(certificateSection != CertificateSectionExpected)(
@@ -105,7 +106,7 @@ class UploadTemplateCsvParser @Inject() {
               line = SectionLineNumber,
               column = Some("Certificate"),
               code = "invalid_section_row",
-              message = s"Line $SectionLineNumber must contain '$CertificateSectionExpected' in column G."
+              message = TemplateFileErrorMessage
             )
           )
         ).flatten
@@ -120,7 +121,7 @@ class UploadTemplateCsvParser @Inject() {
             line = HeaderLineNumber,
             column = None,
             code = "missing_header_row",
-            message = s"Line $HeaderLineNumber is missing the template table headers."
+            message = TemplateFileErrorMessage
           )
         )
       case Some(row) =>
@@ -129,19 +130,17 @@ class UploadTemplateCsvParser @Inject() {
             line = HeaderLineNumber,
             column = None,
             code = "unexpected_header_columns",
-            message = s"Line $HeaderLineNumber contains more than ${ExpectedHeaders.length} populated columns."
+            message = TemplateFileErrorMessage
           )
         )
 
         val headerErrors = ExpectedHeaders.zipWithIndex.collect {
           case (expectedHeader, idx) if cellValue(row, idx) != expectedHeader =>
-            val actualHeader = cellValue(row, idx)
             TemplateParseError(
               line = HeaderLineNumber,
               column = Some(expectedHeader),
               code = "header_mismatch",
-              message =
-                s"Line $HeaderLineNumber column ${idx + 1} expected '$expectedHeader' but found '$actualHeader'."
+              message = TemplateFileErrorMessage
             )
         }
 
@@ -174,78 +173,55 @@ class UploadTemplateCsvParser @Inject() {
           line = lineNumber,
           column = None,
           code = "unexpected_data_columns",
-          message = s"Line $lineNumber has values beyond column ${ExpectedHeaders.length}."
+          message = TemplateFileErrorMessage
         )
       )
     )
 
     if row.forall(_.isEmpty) then ParsedRowResult(None, extraColumnErrors)
     else {
-      val requiredErrors = RequiredNotificationColumnIndexes.collect {
-        case index if row(index).isEmpty =>
-          TemplateParseError(
-            line = lineNumber,
-            column = Some(ExpectedHeaders(index)),
-            code = "missing_required_value",
-            message = s"Line $lineNumber ${ExpectedHeaders(index)} is required."
-          )
-      }
-
-      val (companyType, companyTypeErrors) = parseEnumValue(
-        lineNumber,
-        CompanyTypeIndex,
-        row(CompanyTypeIndex),
-        CompanyType.fromString,
-        "invalid_company_type"
-      )
-
-      val (companyStatus, companyStatusErrors) = parseEnumValue(
-        lineNumber,
-        CompanyStatusIndex,
-        row(CompanyStatusIndex),
-        CompanyStatus.fromString,
-        "invalid_company_status"
-      )
-
-      val (certificateType, certificateTypeErrors) = parseEnumValue(
-        lineNumber,
-        CertificateTypeIndex,
-        row(CertificateTypeIndex),
-        CertificateType.fromString,
-        "invalid_certificate_type"
-      )
-
+      val (companyName, companyNameErrors) =
+        parseCompanyNameValue(lineNumber, row(CompanyNameIndex))
       val (companyUtr, companyUtrErrors) =
         parseCompanyUtrValue(lineNumber, row(CompanyUtrIndex))
       val (companyCrn, companyCrnErrors) =
         parseCompanyCrnValue(lineNumber, row(CompanyCrnIndex))
+      val (companyType, companyTypeErrors) =
+        parseCompanyTypeValue(lineNumber, row(CompanyTypeIndex))
+      val (companyStatus, companyStatusErrors) =
+        parseCompanyStatusValue(lineNumber, row(CompanyStatusIndex))
       val (financialYearEndDate, financialYearEndDateErrors) =
         parseFinancialYearEndDateValue(lineNumber, row(FinancialYearEndDateIndex))
-
-      val (taxFlags, taxRegimeErrors) = parseTaxFlags(lineNumber, row)
+      val (taxFlags, taxRegimeErrors) =
+        parseTaxFlags(lineNumber, row)
+      val (certificateType, certificateTypeErrors) =
+        parseCertificateTypeValue(lineNumber, row(CertificateTypeIndex), taxFlags)
+      val additionalInformationErrors =
+        validateAdditionalInformationValue(lineNumber, row(AdditionalInformationIndex), taxFlags.hasAnySelected)
 
       val rowErrors =
         List(
           extraColumnErrors,
-          requiredErrors,
+          companyNameErrors,
           companyUtrErrors,
           companyCrnErrors,
-          financialYearEndDateErrors,
           companyTypeErrors,
           companyStatusErrors,
+          financialYearEndDateErrors,
+          taxRegimeErrors,
           certificateTypeErrors,
-          taxRegimeErrors
+          additionalInformationErrors
         ).iterator.flatten.toVector
 
       if rowErrors.nonEmpty then ParsedRowResult(None, rowErrors)
       else
-        (companyUtr, companyType, companyStatus, financialYearEndDate) match {
-          case (Some(utr), Some(ct), Some(cs), Some(fyeDate)) =>
+        (companyName, companyUtr, companyType, companyStatus, financialYearEndDate, certificateType) match {
+          case (Some(name), Some(utr), Some(ct), Some(cs), Some(fyeDate), Some(certType)) =>
             ParsedRowResult(
               row = Some(
                 ParsedSubmissionRow(
                   notification = NotificationFields(
-                    companyName = row(CompanyNameIndex),
+                    companyName = name,
                     companyUtr = utr,
                     companyCrn = companyCrn,
                     companyType = ct,
@@ -263,7 +239,7 @@ class UploadTemplateCsvParser @Inject() {
                     customsDuties = taxFlags.customsDuties,
                     exciseDuties = taxFlags.exciseDuties,
                     bankLevy = taxFlags.bankLevy,
-                    certificateType = certificateType,
+                    certificateType = Some(certType),
                     additionalInformation = Option(row(AdditionalInformationIndex)).filter(_.nonEmpty)
                   )
                 )
@@ -289,30 +265,26 @@ class UploadTemplateCsvParser @Inject() {
   private def normalizedDataColumns(row: CsvRow): IndexedSeq[String] =
     ExpectedHeaders.indices.map(cellValue(row, _))
 
-  private def parseEnumValue[T](
+  private def parseCompanyNameValue(
       lineNumber: Int,
-      columnIndex: Int,
-      value: String,
-      parse: String => Option[T],
-      code: String
-  ): (Option[T], Vector[TemplateParseError]) =
-    if value.isEmpty then (None, Vector.empty)
-    else
-      parse(value)
-        .map(parsed => (Some(parsed), Vector.empty))
-        .getOrElse(
-          (
-            None,
-            Vector(
-              TemplateParseError(
-                line = lineNumber,
-                column = Some(ExpectedHeaders(columnIndex)),
-                code = code,
-                message = s"Line $lineNumber ${ExpectedHeaders(columnIndex)} value '$value' is not valid."
-              )
+      value: String
+  ): (Option[String], Vector[TemplateParseError]) =
+    Option(value).filter(_.matches(CompanyNameRegex)).filter(_.length <= 105) match {
+      case Some(validName) =>
+        (Some(validName), Vector.empty)
+      case None =>
+        (
+          None,
+          Vector(
+            TemplateParseError(
+              line = lineNumber,
+              column = Some(ExpectedHeaders(CompanyNameIndex)),
+              code = "invalid_company_name",
+              message = CompanyNameErrorMessage
             )
           )
         )
+    }
 
   private def parseTaxRegimeValue(
       lineNumber: Int,
@@ -330,7 +302,7 @@ class UploadTemplateCsvParser @Inject() {
               line = lineNumber,
               column = Some(ExpectedHeaders(columnIndex)),
               code = "invalid_tax_regime_value",
-              message = s"Line $lineNumber ${ExpectedHeaders(columnIndex)} must be 'x' or blank."
+              message = TaxRegimeErrorMessage
             )
           )
         )
@@ -340,24 +312,22 @@ class UploadTemplateCsvParser @Inject() {
       lineNumber: Int,
       value: String
   ): (Option[CompanyUtr], Vector[TemplateParseError]) =
-    if value.isEmpty then (None, Vector.empty)
-    else
-      CompanyUtr
-        .fromString(value)
-        .map(parsed => (Some(parsed), Vector.empty))
-        .getOrElse(
-          (
-            None,
-            Vector(
-              TemplateParseError(
-                line = lineNumber,
-                column = Some(ExpectedHeaders(CompanyUtrIndex)),
-                code = "invalid_company_utr",
-                message = s"Line $lineNumber ${ExpectedHeaders(CompanyUtrIndex)} must be a 10 digit number."
-              )
+    CompanyUtr
+      .fromString(value)
+      .map(parsed => (Some(parsed), Vector.empty))
+      .getOrElse(
+        (
+          None,
+          Vector(
+            TemplateParseError(
+              line = lineNumber,
+              column = Some(ExpectedHeaders(CompanyUtrIndex)),
+              code = "invalid_company_utr",
+              message = CompanyUtrErrorMessage
             )
           )
         )
+      )
 
   private def parseCompanyCrnValue(
       lineNumber: Int,
@@ -376,34 +346,75 @@ class UploadTemplateCsvParser @Inject() {
                 line = lineNumber,
                 column = Some(ExpectedHeaders(CompanyCrnIndex)),
                 code = "invalid_company_crn",
-                message = s"Line $lineNumber ${ExpectedHeaders(CompanyCrnIndex)} must be 1 to 8 letters or numbers."
+                message = CompanyCrnErrorMessage
               )
             )
           )
         )
 
+  private def parseCompanyTypeValue(
+      lineNumber: Int,
+      value: String
+  ): (Option[CompanyType], Vector[TemplateParseError]) =
+    CompanyType
+      .fromString(value)
+      .filter(ct => ct == CompanyType.PLC || ct == CompanyType.LTD)
+      .map(parsed => (Some(parsed), Vector.empty))
+      .getOrElse(
+        (
+          None,
+          Vector(
+            TemplateParseError(
+              line = lineNumber,
+              column = Some(ExpectedHeaders(CompanyTypeIndex)),
+              code = "invalid_company_type",
+              message = CompanyTypeErrorMessage
+            )
+          )
+        )
+      )
+
+  private def parseCompanyStatusValue(
+      lineNumber: Int,
+      value: String
+  ): (Option[CompanyStatus], Vector[TemplateParseError]) =
+    CompanyStatus
+      .fromString(value)
+      .filter(_ => value.matches(CompanyStatusRegex))
+      .map(parsed => (Some(parsed), Vector.empty))
+      .getOrElse(
+        (
+          None,
+          Vector(
+            TemplateParseError(
+              line = lineNumber,
+              column = Some(ExpectedHeaders(CompanyStatusIndex)),
+              code = "invalid_company_status",
+              message = CompanyStatusErrorMessage
+            )
+          )
+        )
+      )
+
   private def parseFinancialYearEndDateValue(
       lineNumber: Int,
       value: String
   ): (Option[LocalDate], Vector[TemplateParseError]) =
-    if value.isEmpty then (None, Vector.empty)
-    else
-      try (Some(LocalDate.parse(value, FinancialYearEndDateFormatter)), Vector.empty)
-      catch {
-        case _: DateTimeParseException =>
-          (
-            None,
-            Vector(
-              TemplateParseError(
-                line = lineNumber,
-                column = Some(ExpectedHeaders(FinancialYearEndDateIndex)),
-                code = "invalid_financial_year_end_date",
-                message =
-                  s"Line $lineNumber ${ExpectedHeaders(FinancialYearEndDateIndex)} must be in dd/MM/yyyy format."
-              )
+    try (Some(LocalDate.parse(value, FinancialYearEndDateFormatter)), Vector.empty)
+    catch {
+      case _: DateTimeParseException =>
+        (
+          None,
+          Vector(
+            TemplateParseError(
+              line = lineNumber,
+              column = Some(ExpectedHeaders(FinancialYearEndDateIndex)),
+              code = "invalid_financial_year_end_date",
+              message = FinancialYearEndDateErrorMessage
             )
           )
-      }
+        )
+    }
 
   private def parseTaxFlags(
       lineNumber: Int,
@@ -461,6 +472,60 @@ class UploadTemplateCsvParser @Inject() {
     )
   }
 
+  private def parseCertificateTypeValue(
+      lineNumber: Int,
+      value: String,
+      taxFlags: TaxFlags
+  ): (Option[CertificateType], Vector[TemplateParseError]) = {
+    val parsedFromValue =
+      if value.isEmpty then None
+      else CertificateType.fromString(value)
+
+    val certificateType =
+      parsedFromValue.orElse(Option.when(value.isEmpty && taxFlags.hasAnySelected)(CertificateType.Qualified))
+
+    val isInvalidMissingOrUnknown =
+      (value.nonEmpty && parsedFromValue.isEmpty) || (value.isEmpty && !taxFlags.hasAnySelected)
+
+    val hasCrossFieldMismatch =
+      certificateType.exists(_ == CertificateType.Unqualified) && taxFlags.hasAnySelected ||
+        certificateType.exists(_ == CertificateType.Qualified) && !taxFlags.hasAnySelected
+
+    if isInvalidMissingOrUnknown || hasCrossFieldMismatch then {
+      (
+        None,
+        Vector(
+          TemplateParseError(
+            line = lineNumber,
+            column = Some(ExpectedHeaders(CertificateTypeIndex)),
+            code = "invalid_certificate_type",
+            message = CertificateTypeErrorMessage
+          )
+        )
+      )
+    } else {
+      (certificateType, Vector.empty)
+    }
+  }
+
+  private def validateAdditionalInformationValue(
+      lineNumber: Int,
+      value: String,
+      hasAnyTaxRegimeSelected: Boolean
+  ): Vector[TemplateParseError] =
+    if hasAnyTaxRegimeSelected && value.isEmpty then {
+      Vector(
+        TemplateParseError(
+          line = lineNumber,
+          column = Some(ExpectedHeaders(AdditionalInformationIndex)),
+          code = "missing_qualified_reason",
+          message = AdditionalInformationErrorMessage
+        )
+      )
+    } else {
+      Vector.empty
+    }
+
   private def cellValue(row: CsvRow, index: Int): String =
     if index < row.length then row(index).trim else ""
 
@@ -486,7 +551,11 @@ object UploadTemplateCsvParser {
       customsDuties: Boolean,
       exciseDuties: Boolean,
       bankLevy: Boolean
-  )
+  ) {
+    val hasAnySelected: Boolean =
+      corporationTax || valueAddedTax || paye || insurancePremiumTax || stampDutyLandTax ||
+        stampDutyReserveTax || petroleumRevenueTax || customsDuties || exciseDuties || bankLevy
+  }
 
   private val LinesToSkipBeforeSectionRow = 6
   private val SectionLineNumber           = LinesToSkipBeforeSectionRow + 1
@@ -545,13 +614,33 @@ object UploadTemplateCsvParser {
   private val AdditionalInformationIndex = 17
 
   private val FinancialYearEndDateFormatter =
-    DateTimeFormatter.ofPattern("dd/MM/yyyy").withResolverStyle(ResolverStyle.SMART)
+    DateTimeFormatterBuilder()
+      .appendPattern("dd/MM/yyyy")
+      .parseDefaulting(ChronoField.ERA, 1)
+      .toFormatter
+      .withResolverStyle(ResolverStyle.STRICT)
 
-  private val RequiredNotificationColumnIndexes = Seq(
-    CompanyNameIndex,
-    CompanyUtrIndex,
-    CompanyTypeIndex,
-    CompanyStatusIndex,
-    FinancialYearEndDateIndex
-  )
+  private val CompanyNameRegex   = "^[A-Za-z0-9 &\\-\\.'’]{1,105}$"
+  private val CompanyStatusRegex = "^[A-Za-z]{1,15}$"
+
+  private val TemplateFileErrorMessage =
+    "The selected file must use the template"
+  private val CompanyNameErrorMessage =
+    "Enter a valid company name. Maximum 105 characters."
+  private val CompanyUtrErrorMessage =
+    "Enter a valid Company UTR. It must be 10 digits long."
+  private val CompanyCrnErrorMessage =
+    "Enter a valid Company Registration Number (CRN). It must be 8 characters"
+  private val CompanyTypeErrorMessage =
+    "Select or enter a valid company type, for example PLC or LTD"
+  private val CompanyStatusErrorMessage =
+    "Select or enter a valid company status, for example Active, Administration, Liquidation, Dormant"
+  private val FinancialYearEndDateErrorMessage =
+    "Enter a valid financial year end date in the format DD/MM/YYYY."
+  private val TaxRegimeErrorMessage =
+    "Enter 'x' if the company is qualified for this tax regime, or leave blank if unqualified."
+  private val CertificateTypeErrorMessage =
+    "Only 'unqualified' or 'qualified' can be entered in this field. 'Qualified' will be added automatically if you enter an 'x' against a tax regime in columns G to P"
+  private val AdditionalInformationErrorMessage =
+    "Explain why the certificate is qualified and a tax regime has been selected."
 }

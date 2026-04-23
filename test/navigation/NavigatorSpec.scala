@@ -18,7 +18,7 @@ package navigation
 
 import base.SpecBase
 import controllers.routes
-import models.upload.UploadTemplateDebugData
+import models.upload.UploadTemplateTableData
 import models.{CheckMode, NormalMode, UserAnswers}
 import pages.*
 
@@ -175,26 +175,26 @@ class NavigatorSpec extends SpecBase {
         ) mustBe routes.SubmitCertificateStartController.onPageLoad()
       }
 
-      "when on UploadTemplateDebugPage with no parsing errors, must go to submit notification start page" in {
+      "when on UploadTemplateTablePage with no parsing errors, must go to submit notification start page" in {
         val userAnswers =
           UserAnswers("id")
-            .set(UploadTemplateDebugPage, UploadTemplateDebugData(rows = Seq.empty, errors = Seq.empty))
+            .set(UploadTemplateTablePage, UploadTemplateTableData(rows = Seq.empty, errors = Seq.empty))
             .success
             .value
 
         navigator.nextPage(
-          UploadTemplateDebugPage,
+          UploadTemplateTablePage,
           NormalMode,
           userAnswers
         ) mustBe routes.SubmitNotificationStartController.onPageLoad()
       }
 
-      "when on UploadTemplateDebugPage with parsing errors, must go to upload form page" in {
+      "when on UploadTemplateTablePage with parsing errors, must go to upload form page" in {
         val userAnswers =
           UserAnswers("id")
             .set(
-              UploadTemplateDebugPage,
-              UploadTemplateDebugData(
+              UploadTemplateTablePage,
+              UploadTemplateTableData(
                 rows = Seq.empty,
                 errors = Seq(models.upload.TemplateParseError(9, Some("Company UTR"), "missing_required_value", "x"))
               )
@@ -203,7 +203,7 @@ class NavigatorSpec extends SpecBase {
             .value
 
         navigator.nextPage(
-          UploadTemplateDebugPage,
+          UploadTemplateTablePage,
           NormalMode,
           userAnswers
         ) mustBe routes.NotificationUploadFormController.onPageLoad()

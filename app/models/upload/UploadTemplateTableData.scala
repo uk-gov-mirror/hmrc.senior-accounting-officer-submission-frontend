@@ -18,11 +18,11 @@ package models.upload
 
 import play.api.libs.json.{Json, OFormat}
 
-final case class UploadTemplateDebugData(
+final case class UploadTemplateTableData(
     rows: Seq[ParsedSubmissionRow],
     errors: Seq[TemplateParseError]
 )
 
-object UploadTemplateDebugData {
-  given OFormat[UploadTemplateDebugData] = Json.format[UploadTemplateDebugData]
+object UploadTemplateTableData {
+  given OFormat[UploadTemplateTableData] = Json.format[UploadTemplateTableData]
 }

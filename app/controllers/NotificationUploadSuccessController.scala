@@ -17,8 +17,8 @@
 package controllers
 
 import controllers.actions.*
-import models.upload.UploadTemplateDebugData
-import pages.UploadTemplateDebugPage
+import models.upload.UploadTemplateTableData
+import pages.UploadTemplateTablePage
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.*
@@ -59,18 +59,18 @@ class NotificationUploadSuccessController @Inject() (
           Future.successful(Redirect(routes.NotificationUploadErrorController.onPageLoad()))
         case State.ValidationFailed(errors) =>
           Logger(getClass).warn(s"Uploaded template failed validation with ${errors.size} error(s)")
-          val debugData = UploadTemplateDebugData(rows = Seq.empty, errors = errors)
+          val tableData = UploadTemplateTableData(rows = Seq.empty, errors = errors)
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(UploadTemplateDebugPage, debugData))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(UploadTemplateTablePage, tableData))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(routes.UploadTemplateDebugController.onPageLoad())
+          } yield Redirect(routes.UploadTemplateTableErrorController.onPageLoad())
         case State.Result(reference, rows) =>
           Logger(getClass).info(s"Uploaded template parsed successfully, reference: $reference, rows: ${rows.size}")
-          val debugData = UploadTemplateDebugData(rows = rows, errors = Seq.empty)
+          val tableData = UploadTemplateTableData(rows = rows, errors = Seq.empty)
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(UploadTemplateDebugPage, debugData))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(UploadTemplateTablePage, tableData))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(routes.UploadTemplateDebugController.onPageLoad())
+          } yield Redirect(routes.UploadTemplateTableController.onPageLoad())
       }
     }
 

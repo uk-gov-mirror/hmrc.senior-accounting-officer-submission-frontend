@@ -16,8 +16,10 @@ GET         /notification/template/download                           controller
 GET         /notification/upload                                      controllers.NotificationUploadFormController.onPageLoad()
 GET         /notification/upload/error                                controllers.NotificationUploadErrorController.onPageLoad()
 GET         /notification/upload/success                              controllers.NotificationUploadSuccessController.onPageLoad(key: Option[String])
-GET         /notification/upload/debug                                controllers.UploadTemplateDebugController.onPageLoad()
-POST        /notification/upload/debug                                controllers.UploadTemplateDebugController.onSubmit()
+GET         /notification/upload/table                                controllers.UploadTemplateTableController.onPageLoad()
+POST        /notification/upload/table                                controllers.UploadTemplateTableController.onSubmit()
+GET         /notification/upload/table/error                          controllers.UploadTemplateTableErrorController.onPageLoad()
+POST        /notification/upload/table/error                          controllers.UploadTemplateTableErrorController.onSubmit()
 
 GET         /notification/guidance                                    controllers.NotificationGuidanceController.onPageLoad()
 POST        /notification/guidance                                    controllers.NotificationGuidanceController.onSubmit()

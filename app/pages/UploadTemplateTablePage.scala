@@ -16,12 +16,12 @@
 
 package pages
 
-import models.upload.UploadTemplateDebugData
+import models.upload.UploadTemplateTableData
 import play.api.libs.json.JsPath
 
-case object UploadTemplateDebugPage extends QuestionPage[UploadTemplateDebugData] {
+case object UploadTemplateTablePage extends QuestionPage[UploadTemplateTableData] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "uploadTemplateDebug"
+  override def toString: String = "uploadTemplateTable"
 }
