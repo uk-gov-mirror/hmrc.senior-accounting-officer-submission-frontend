@@ -28,12 +28,12 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.http.Status.{BAD_REQUEST, OK}
-import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import services.UpscanService.*
 import services.UpscanServiceSpec.*
 import services.csvparser.UploadTemplateCsvParser
+import services.csvparser.UploadTemplateCsvSchema.{Column, TemplateError}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils.TestDataGenerator.*
 
@@ -85,7 +85,7 @@ class UpscanServiceSpec extends SpecBase with GuiceOneAppPerSuite with BeforeAnd
       when(mockUpscanDownloadConnector.download(any())(using any())).thenReturn(
         Future.successful(testResponse)
       )
-      when(mockUploadTemplateCsvParser.parse(any(), any[Messages], any()))
+      when(mockUploadTemplateCsvParser.parse(any(), any()))
         .thenReturn(nonEmptyTemplate)
 
       val result = SUT
@@ -107,7 +107,7 @@ class UpscanServiceSpec extends SpecBase with GuiceOneAppPerSuite with BeforeAnd
       result mustBe State.Result(testFileReference, rows)
 
       verify(mockUpscanDownloadConnector, times(1)).download(meq(testDownloadUrl))(using any())
-      verify(mockUploadTemplateCsvParser, times(1)).parse(meq(testFileContent), any[Messages], meq(true))
+      verify(mockUploadTemplateCsvParser, times(1)).parse(meq(testFileContent), meq(true))
     }
 
     "must return State.ValidationFailed when the downloaded CSV is empty" in {
@@ -118,7 +118,7 @@ class UpscanServiceSpec extends SpecBase with GuiceOneAppPerSuite with BeforeAnd
       when(mockUpscanDownloadConnector.download(any())(using any())).thenReturn(
         Future.successful(testResponse)
       )
-      when(mockUploadTemplateCsvParser.parse(any(), any[Messages], any()))
+      when(mockUploadTemplateCsvParser.parse(any(), any()))
         .thenReturn(emptyTemplate)
 
       val result = SUT
@@ -140,7 +140,7 @@ class UpscanServiceSpec extends SpecBase with GuiceOneAppPerSuite with BeforeAnd
       result mustBe State.ValidationFailed(Seq.empty)
 
       verify(mockUpscanDownloadConnector, times(1)).download(meq(testDownloadUrl))(using any())
-      verify(mockUploadTemplateCsvParser, times(1)).parse(meq(testFileContent), any[Messages], meq(true))
+      verify(mockUploadTemplateCsvParser, times(1)).parse(meq(testFileContent), meq(true))
     }
 
     "must return State.NoReference when no reference is received" in {
@@ -254,7 +254,7 @@ class UpscanServiceSpec extends SpecBase with GuiceOneAppPerSuite with BeforeAnd
               exciseDuties = false,
               bankLevy = false,
               certificateType = None,
-              additionalInformation = None
+              qualificationStatement = None
             )
           )
         )
@@ -262,7 +262,7 @@ class UpscanServiceSpec extends SpecBase with GuiceOneAppPerSuite with BeforeAnd
       when(mockUpscanDownloadConnector.download(any())(using any())).thenReturn(
         Future.successful(testResponse)
       )
-      when(mockUploadTemplateCsvParser.parse(any(), any[Messages], any()))
+      when(mockUploadTemplateCsvParser.parse(any(), any()))
         .thenReturn(TemplateParseResult.Valid(parsedRows))
 
       val result = SUT
@@ -284,7 +284,7 @@ class UpscanServiceSpec extends SpecBase with GuiceOneAppPerSuite with BeforeAnd
       result mustBe State.Result(testFileReference, parsedRows)
 
       verify(mockUpscanDownloadConnector, times(1)).download(meq(testDownloadUrl))(using any())
-      verify(mockUploadTemplateCsvParser, times(1)).parse(meq(testFileContent), any[Messages], meq(true))
+      verify(mockUploadTemplateCsvParser, times(1)).parse(meq(testFileContent), meq(true))
     }
 
     "must return State.ValidationFailed when the downloaded CSV is invalid" in {
@@ -292,16 +292,15 @@ class UpscanServiceSpec extends SpecBase with GuiceOneAppPerSuite with BeforeAnd
       val parseErrors  = Seq(
         TemplateParseError(
           line = 8,
-          column = Some("Company UTR"),
-          code = "header_mismatch",
-          message = "invalid header"
+          column = Some(Column.Utr),
+          TemplateError.InvalidTemplateError
         )
       )
 
       when(mockUpscanDownloadConnector.download(any())(using any())).thenReturn(
         Future.successful(testResponse)
       )
-      when(mockUploadTemplateCsvParser.parse(any(), any[Messages], any()))
+      when(mockUploadTemplateCsvParser.parse(any(), any()))
         .thenReturn(TemplateParseResult.Invalid(parseErrors))
 
       val result = SUT
@@ -323,7 +322,7 @@ class UpscanServiceSpec extends SpecBase with GuiceOneAppPerSuite with BeforeAnd
       result mustBe State.ValidationFailed(parseErrors)
 
       verify(mockUpscanDownloadConnector, times(1)).download(meq(testDownloadUrl))(using any())
-      verify(mockUploadTemplateCsvParser, times(1)).parse(meq(testFileContent), any[Messages], meq(true))
+      verify(mockUploadTemplateCsvParser, times(1)).parse(meq(testFileContent), meq(true))
     }
 
     "must return State.DownloadFromUpscanFailed when the file upload is completed but the file download from upscan fails" in {
@@ -373,7 +372,7 @@ class UpscanServiceSpec extends SpecBase with GuiceOneAppPerSuite with BeforeAnd
       result mustBe State.RejectedByUpscan
 
       verify(mockUpscanDownloadConnector, times(0)).download(any())(using any())
-      verify(mockUploadTemplateCsvParser, times(0)).parse(any(), any[Messages], any())
+      verify(mockUploadTemplateCsvParser, times(0)).parse(any(), any())
     }
   }
 

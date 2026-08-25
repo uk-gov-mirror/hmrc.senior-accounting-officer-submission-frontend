@@ -34,6 +34,7 @@ import play.api.test.Helpers.{status, *}
 import repositories.SessionRepository
 import services.UpscanService
 import services.UpscanService.*
+import services.csvparser.UploadTemplateCsvSchema.{Column, TemplateError}
 import uk.gov.hmrc.http.HttpResponse
 import views.html.certificate.CertificateUploadSuccessView
 
@@ -256,9 +257,8 @@ class CertificateUploadSuccessControllerSpec extends SpecBase with BeforeAndAfte
               Seq(
                 TemplateParseError(
                   line = 8,
-                  column = Some("Company UTR"),
-                  code = "header_mismatch",
-                  message = "invalid header"
+                  column = Some(Column.Utr),
+                  error = TemplateError.UtrError
                 )
               )
             )

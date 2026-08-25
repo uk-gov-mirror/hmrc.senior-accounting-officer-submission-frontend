@@ -32,6 +32,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import repositories.SessionRepository
+import services.csvparser.UploadTemplateCsvSchema.{Column, TemplateError}
 import views.html.notification.{UploadTemplateTableErrorView, UploadTemplateTableView}
 
 import scala.concurrent.Future
@@ -66,7 +67,7 @@ class UploadTemplateTableControllerSpec extends SpecBase with MockitoSugar {
             exciseDuties = false,
             bankLevy = false,
             certificateType = Some(CertificateType.Qualified),
-            additionalInformation = Some("Example")
+            qualificationStatement = Some("Example")
           )
         )
       )
@@ -88,7 +89,7 @@ class UploadTemplateTableControllerSpec extends SpecBase with MockitoSugar {
 
   private val errorTableData = UploadTemplateTableData(
     rows = Seq.empty,
-    errors = Seq(TemplateParseError(9, Some("Company UTR"), "missing_required_value", "UTR is required"))
+    errors = Seq(TemplateParseError(9, Some(Column.Utr), TemplateError.UtrError))
   )
 
   private val populatedErrorAnswers = completedSaoDetailsAnswers

@@ -52,7 +52,7 @@ class UploadTemplatePlaybackServiceSpec extends SpecBase {
             exciseDuties = false,
             bankLevy = false,
             certificateType = Some(CertificateType.Qualified),
-            additionalInformation = Some("Example")
+            qualificationStatement = Some("Example")
           )
         )
       )

@@ -47,29 +47,44 @@ class TaxRegimeParser @Inject() {
 
   def parse(
       lineNumber: Int,
-      row: IndexedSeq[String],
-      rowErrorMessages: UploadTemplateRowErrorMessages
+      row: IndexedSeq[String]
   ): TaxRegimeParseResult = {
     val (corporationTax, corporationTaxErrors) =
-      parseTaxRegimeValue(lineNumber, CorporationTaxIndex, row(CorporationTaxIndex), rowErrorMessages)
+      parseTaxRegimeValue(lineNumber, Column.CorporationTax, row(Column.CorporationTax.columnIndex))
     val (valueAddedTax, valueAddedTaxErrors) =
-      parseTaxRegimeValue(lineNumber, ValueAddedTaxIndex, row(ValueAddedTaxIndex), rowErrorMessages)
+      parseTaxRegimeValue(lineNumber, Column.Vat, row(Column.Vat.columnIndex))
     val (paye, payeErrors) =
-      parseTaxRegimeValue(lineNumber, PayeIndex, row(PayeIndex), rowErrorMessages)
+      parseTaxRegimeValue(lineNumber, Column.Paye, row(Column.Paye.columnIndex))
     val (insurancePremiumTax, insurancePremiumTaxErrors) =
-      parseTaxRegimeValue(lineNumber, InsurancePremiumTaxIndex, row(InsurancePremiumTaxIndex), rowErrorMessages)
+      parseTaxRegimeValue(
+        lineNumber,
+        Column.InsurancePremiumTax,
+        row(Column.InsurancePremiumTax.columnIndex)
+      )
     val (stampDutyLandTax, stampDutyLandTaxErrors) =
-      parseTaxRegimeValue(lineNumber, StampDutyLandTaxIndex, row(StampDutyLandTaxIndex), rowErrorMessages)
+      parseTaxRegimeValue(
+        lineNumber,
+        Column.StampDutyLandTax,
+        row(Column.StampDutyLandTax.columnIndex)
+      )
     val (stampDutyReserveTax, stampDutyReserveTaxErrors) =
-      parseTaxRegimeValue(lineNumber, StampDutyReserveTaxIndex, row(StampDutyReserveTaxIndex), rowErrorMessages)
+      parseTaxRegimeValue(
+        lineNumber,
+        Column.StampDutyReserveTax,
+        row(Column.StampDutyReserveTax.columnIndex)
+      )
     val (petroleumRevenueTax, petroleumRevenueTaxErrors) =
-      parseTaxRegimeValue(lineNumber, PetroleumRevenueTaxIndex, row(PetroleumRevenueTaxIndex), rowErrorMessages)
+      parseTaxRegimeValue(
+        lineNumber,
+        Column.PetroleumRevenueTax,
+        row(Column.PetroleumRevenueTax.columnIndex)
+      )
     val (customsDuties, customsDutiesErrors) =
-      parseTaxRegimeValue(lineNumber, CustomsDutiesIndex, row(CustomsDutiesIndex), rowErrorMessages)
+      parseTaxRegimeValue(lineNumber, Column.CustomsDuties, row(Column.CustomsDuties.columnIndex))
     val (exciseDuties, exciseDutiesErrors) =
-      parseTaxRegimeValue(lineNumber, ExciseDutiesIndex, row(ExciseDutiesIndex), rowErrorMessages)
+      parseTaxRegimeValue(lineNumber, Column.ExciseDuties, row(Column.ExciseDuties.columnIndex))
     val (bankLevy, bankLevyErrors) =
-      parseTaxRegimeValue(lineNumber, BankLevyIndex, row(BankLevyIndex), rowErrorMessages)
+      parseTaxRegimeValue(lineNumber, Column.BankLevy, row(Column.BankLevy.columnIndex))
 
     val errors =
       List(
@@ -104,9 +119,8 @@ class TaxRegimeParser @Inject() {
 
   private def parseTaxRegimeValue(
       lineNumber: Int,
-      columnIndex: Int,
-      value: String,
-      rowErrorMessages: UploadTemplateRowErrorMessages
+      column: Column,
+      value: String
   ): (Boolean, Vector[TemplateParseError]) =
     value.toLowerCase match {
       case ""  => (false, Vector.empty)
@@ -117,9 +131,8 @@ class TaxRegimeParser @Inject() {
           Vector(
             TemplateParseError(
               line = lineNumber,
-              column = Some(ColumnNameMessageKeys(columnIndex)),
-              code = "invalid_tax_regime_value",
-              message = rowErrorMessages.taxRegime
+              column = Some(column),
+              error = TemplateError.TaxRegimeError
             )
           )
         )

@@ -23,15 +23,14 @@ import javax.inject.Inject
 
 class UploadTemplateStructureValidator @Inject() () {
 
-  def validateSectionRow(rowOpt: Option[CsvRow], templateFileErrorMessage: String): Seq[TemplateParseError] =
+  def validateSectionRow(rowOpt: Option[CsvRow]): Seq[TemplateParseError] =
     rowOpt match {
       case None =>
         Seq(
           TemplateParseError(
             line = SectionLineNumber,
             column = None,
-            code = "missing_section_row",
-            message = templateFileErrorMessage
+            error = TemplateError.InvalidTemplateError
           )
         )
       case Some(row) =>
@@ -42,17 +41,15 @@ class UploadTemplateStructureValidator @Inject() () {
           Option.when(notificationSection != NotificationSectionExpected)(
             TemplateParseError(
               line = SectionLineNumber,
-              column = Some("Notification"),
-              code = "invalid_section_row",
-              message = templateFileErrorMessage
+              column = None,
+              error = TemplateError.InvalidTemplateError
             )
           ),
           Option.when(certificateSection != CertificateSectionExpected)(
             TemplateParseError(
               line = SectionLineNumber,
-              column = Some("Certificate"),
-              code = "invalid_section_row",
-              message = templateFileErrorMessage
+              column = None,
+              error = TemplateError.InvalidTemplateError
             )
           )
         ).flatten
@@ -61,15 +58,14 @@ class UploadTemplateStructureValidator @Inject() () {
   private def normaliseLineEnding(string: String): String =
     string.replaceAll("\r\n", "\n").replaceAll("\r", "\n")
 
-  def validateHeaderRow(rowOpt: Option[CsvRow], templateFileErrorMessage: String): Seq[TemplateParseError] =
+  def validateHeaderRow(rowOpt: Option[CsvRow]): Seq[TemplateParseError] =
     rowOpt match {
       case None =>
         Seq(
           TemplateParseError(
             line = HeaderLineNumber,
             column = None,
-            code = "missing_header_row",
-            message = templateFileErrorMessage
+            error = TemplateError.InvalidTemplateError
           )
         )
       case Some(row) =>
@@ -77,8 +73,7 @@ class UploadTemplateStructureValidator @Inject() () {
           TemplateParseError(
             line = HeaderLineNumber,
             column = None,
-            code = "unexpected_header_columns",
-            message = templateFileErrorMessage
+            error = TemplateError.InvalidTemplateError
           )
         )
 
@@ -87,9 +82,8 @@ class UploadTemplateStructureValidator @Inject() () {
 
             TemplateParseError(
               line = HeaderLineNumber,
-              column = Some(expectedHeader),
-              code = "header_mismatch",
-              message = templateFileErrorMessage
+              column = None,
+              error = TemplateError.InvalidTemplateError
             )
         }
 

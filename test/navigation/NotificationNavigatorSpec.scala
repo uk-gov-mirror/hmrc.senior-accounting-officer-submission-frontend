@@ -24,6 +24,7 @@ import models.upload.UploadTemplateTableData
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import pages.*
 import pages.notification.*
+import services.csvparser.UploadTemplateCsvSchema.{Column, TemplateError}
 
 import java.time.LocalDate
 
@@ -185,7 +186,7 @@ class NotificationNavigatorSpec extends SpecBase with GuiceOneAppPerSuite {
               UploadTemplateTablePage,
               UploadTemplateTableData(
                 rows = Seq.empty,
-                errors = Seq(models.upload.TemplateParseError(9, Some("Company UTR"), "missing_required_value", "x"))
+                errors = Seq(models.upload.TemplateParseError(9, Some(Column.Utr), TemplateError.UtrError))
               )
             )
             .success

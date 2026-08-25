@@ -71,7 +71,7 @@ object ParsedSubmissionRow {
             customsDuties = certificate.customsDuties,
             exciseDuties = certificate.exciseDuties,
             bankLevy = certificate.bankLevy,
-            additionalInformation = certificate.additionalInformation.fold("")(s => s)
+            additionalInformation = certificate.qualificationStatement.fold("")(s => s)
           )
         )
       else None
@@ -163,7 +163,7 @@ final case class CertificateFields(
     exciseDuties: Boolean,
     bankLevy: Boolean,
     certificateType: Option[CertificateType],
-    additionalInformation: Option[String]
+    qualificationStatement: Option[String]
 )
 
 object CertificateFields {

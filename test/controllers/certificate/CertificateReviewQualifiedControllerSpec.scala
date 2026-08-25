@@ -32,6 +32,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import repositories.SessionRepository
+import services.csvparser.UploadTemplateCsvSchema.{Column, TemplateError}
 import views.html.certificate.{CertificateReviewQualifiedView, CertificateUploadTemplateTableErrorView}
 
 import scala.concurrent.Future
@@ -242,7 +243,7 @@ object CertificateReviewQualifiedControllerSpec {
             exciseDuties = false,
             bankLevy = false,
             certificateType = Some(CertificateType.Qualified),
-            additionalInformation = Some("example additional information")
+            qualificationStatement = Some("example additional information")
           )
         )
       ),
@@ -268,7 +269,7 @@ object CertificateReviewQualifiedControllerSpec {
             exciseDuties = true,
             bankLevy = false,
             certificateType = Some(CertificateType.Qualified),
-            additionalInformation = Some("example additional information 2")
+            qualificationStatement = Some("example additional information 2")
           )
         )
       ),
@@ -294,7 +295,7 @@ object CertificateReviewQualifiedControllerSpec {
             exciseDuties = false,
             bankLevy = false,
             certificateType = Some(CertificateType.Unqualified),
-            additionalInformation = None
+            qualificationStatement = None
           )
         )
       )
@@ -304,7 +305,7 @@ object CertificateReviewQualifiedControllerSpec {
 
   val errorTemplateData: UploadTemplateTableData = UploadTemplateTableData(
     rows = Seq.empty,
-    errors = Seq(TemplateParseError(9, Some("Company UTR"), "missing_required_value", "UTR is required"))
+    errors = Seq(TemplateParseError(9, Some(Column.Utr), TemplateError.UtrError))
   )
 
   val testQualifiedCompanies: Seq[QualifiedCompany] = Seq(

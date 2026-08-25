@@ -22,20 +22,6 @@ import services.csvparser.UploadTemplateCsvSchema.*
 
 import javax.inject.Inject
 
-final case class UploadTemplateRowErrorMessages(
-    companyName: String,
-    companyUtr: String,
-    companyCrn: String,
-    companyType: String,
-    companyStatus: String,
-    financialYearEndDate: String,
-    taxRegime: String,
-    certificateType: String,
-    additionalInformationMissing: String,
-    additionalInformationTooLong: String,
-    additionalInformationProhibited: String
-)
-
 class UploadTemplateRowParser @Inject() (
     companyFieldParser: CompanyFieldParser,
     taxRegimeParser: TaxRegimeParser,
@@ -49,13 +35,11 @@ class UploadTemplateRowParser @Inject() (
 
   def parseDataRows(
       rows: Vector[CsvRow],
-      rowErrorMessages: UploadTemplateRowErrorMessages,
-      templateFileErrorMessage: String,
       notificationOnly: Boolean
   ): TemplateParseResult = {
     val parsedRows =
       rows.zipWithIndex.drop(DataStartIndex).map { case (rawRow, idx) =>
-        parseDataRow(rawRow, idx + 1, rowErrorMessages, templateFileErrorMessage, notificationOnly)
+        parseDataRow(rawRow, idx + 1, notificationOnly)
       }
 
     val errors = parsedRows.flatMap(_.errors)
@@ -66,42 +50,27 @@ class UploadTemplateRowParser @Inject() (
   private def parseDataRow(
       rawRow: CsvRow,
       lineNumber: Int,
-      rowErrorMessages: UploadTemplateRowErrorMessages,
-      templateFileErrorMessage: String,
       notificationOnly: Boolean
   ): ParsedRowResult = {
     val row = normalizedDataColumns(rawRow)
 
-    val extraColumnErrors = Vector.from(
-      Option.when(rawRow.drop(ExpectedHeaders.length).exists(_.trim.nonEmpty))(
-        TemplateParseError(
-          line = lineNumber,
-          column = None,
-          code = "unexpected_data_columns",
-          message = templateFileErrorMessage
-        )
-      )
-    )
-
-    if row.forall(_.isEmpty) then ParsedRowResult(None, extraColumnErrors)
+    if row.forall(_.isEmpty) then ParsedRowResult(None, Vector.empty)
     else {
-      val companyResult = companyFieldParser.parse(lineNumber, row, rowErrorMessages)
-      val taxResult     = taxRegimeParser.parse(lineNumber, row, rowErrorMessages)
+      val companyResult = companyFieldParser.parse(lineNumber, row)
+      val taxResult     = taxRegimeParser.parse(lineNumber, row)
       val certResult    =
         if notificationOnly then
-          CertificateParseResult(certificateType = None, additionalInformation = None, errors = Vector.empty)
+          CertificateParseResult(certificateType = None, qualificationStatement = None, errors = Vector.empty)
         else
           certificateRulesValidator.parse(
             lineNumber = lineNumber,
-            certificateTypeValue = row(CertificateTypeIndex),
-            additionalInformationValue = row(AdditionalInformationIndex),
-            taxFlags = taxResult.flags,
-            rowErrorMessages = rowErrorMessages
+            certificateTypeValue = row(Column.CertificateType.columnIndex),
+            qualificationStatementValue = row(Column.QualificationStatement.columnIndex),
+            taxFlags = taxResult.flags
           )
 
       val rowErrors =
-        extraColumnErrors ++
-          companyResult.errors ++
+        companyResult.errors ++
           (if notificationOnly then Seq.empty else taxResult.errors) ++
           certResult.errors
 
@@ -148,7 +117,7 @@ class UploadTemplateRowParser @Inject() (
                   exciseDuties = taxResult.flags.exciseDuties,
                   bankLevy = taxResult.flags.bankLevy,
                   certificateType = Some(certType),
-                  additionalInformation = certResult.additionalInformation
+                  qualificationStatement = certResult.qualificationStatement
                 )
               )
             )

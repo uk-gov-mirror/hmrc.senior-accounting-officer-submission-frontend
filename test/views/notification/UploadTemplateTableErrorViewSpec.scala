@@ -22,6 +22,7 @@ import controllers.routes
 import models.upload.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import services.csvparser.UploadTemplateCsvSchema.{Column, TemplateError}
 import views.html.notification.UploadTemplateTableErrorView
 
 import scala.jdk.CollectionConverters.*
@@ -95,10 +96,10 @@ class UploadTemplateTableErrorViewSpec extends ViewSpecBase[UploadTemplateTableE
         tableRows.first().select("td").first().text() mustBe "9"
         tableRows.first().select("td").first().attr("rowspan") mustBe "2"
         doc.select("tbody.govuk-table__body").text() must include(
-          "Enter a valid Company UTR. It must be 10 digits long"
+          "Enter a company UTR. It must be 10 digits long"
         )
         doc.select("tbody.govuk-table__body").text() must include(
-          "Enter a valid Company CRN. It must be 8 characters long"
+          "Enter a CRN. It must be 8 characters long"
         )
       }
 
@@ -160,22 +161,17 @@ object UploadTemplateTableErrorViewSpec {
   )
 
   val invalidTemplates: Map[String, UploadTemplateTableData] = Map(
-    "the file is missing the section row"                        -> invalidTemplate("missing_section_row"),
-    "the section row in the file is invalid"                     -> invalidTemplate("invalid_section_row"),
-    "the file is missing the template header row"                -> invalidTemplate("missing_header_row"),
-    "the file has additional header columns"                     -> invalidTemplate("unexpected_header_columns"),
-    "the headers in the file do not match the expected template" -> invalidTemplate("header_mismatch"),
-    "the template empty"                                         -> emptyTemplate
+    "the template is invalid" -> invalidTemplate,
+    "the template empty"      -> emptyTemplate
   )
 
-  private def invalidTemplate(code: String): UploadTemplateTableData = UploadTemplateTableData(
+  private def invalidTemplate: UploadTemplateTableData = UploadTemplateTableData(
     rows = Seq.empty,
     errors = Seq(
       TemplateParseError(
         line = 9,
         column = None,
-        code = code,
-        message = ""
+        TemplateError.InvalidTemplateError
       )
     )
   )
@@ -185,15 +181,13 @@ object UploadTemplateTableErrorViewSpec {
     errors = Seq(
       TemplateParseError(
         line = 9,
-        column = Some("UTR"),
-        code = "invalid_company_utr",
-        message = "Enter a valid Company UTR. It must be 10 digits long"
+        column = Some(Column.Utr),
+        TemplateError.UtrError
       ),
       TemplateParseError(
         line = 9,
-        column = Some("CRN"),
-        code = "invalid_company_crn",
-        message = "Enter a valid Company CRN. It must be 8 characters long"
+        column = Some(Column.Crn),
+        TemplateError.CrnError
       )
     )
   )
@@ -203,15 +197,13 @@ object UploadTemplateTableErrorViewSpec {
     errors = tableData.errors ++ Seq(
       TemplateParseError(
         line = 10,
-        column = Some("UTR"),
-        code = "invalid_company_utr",
-        message = "Enter a valid Company UTR. It must be 10 digits long"
+        column = Some(Column.Utr),
+        error = TemplateError.UtrError
       ),
       TemplateParseError(
         line = 10,
-        column = Some("CRN"),
-        code = "invalid_company_crn",
-        message = "Enter a valid Company CRN. It must be 8 characters long"
+        column = Some(Column.Crn),
+        error = TemplateError.CrnError
       )
     )
   )

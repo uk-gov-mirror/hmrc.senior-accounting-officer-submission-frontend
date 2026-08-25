@@ -259,7 +259,7 @@ object NotificationSubmitServiceSpec {
             exciseDuties = false,
             bankLevy = false,
             certificateType = None,
-            additionalInformation = None
+            qualificationStatement = None
           )
         )
       )

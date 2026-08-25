@@ -215,7 +215,7 @@ object CertificateSubmissionServiceSpec {
           exciseDuties = false,
           bankLevy = false,
           certificateType = Some(CertificateType.Qualified),
-          additionalInformation = None
+          qualificationStatement = None
         )
       )
     )

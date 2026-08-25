@@ -21,6 +21,8 @@ import models.upload.*
 import models.upload.TemplateParseResult.{Invalid, Valid}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import services.csvparser.UploadTemplateCsvParser
+import services.csvparser.UploadTemplateCsvSchema.TemplateError.InvalidTemplateError
+import services.csvparser.UploadTemplateCsvSchema.{Column, TemplateError}
 import utils.TestDataGenerator.generateAlphanumeric
 
 import scala.io.Source
@@ -62,7 +64,7 @@ class UploadTemplateCsvParserSpec extends SpecBase with GuiceOneAppPerSuite {
           exciseDuties = false,
           bankLevy = false,
           certificateType = Some(certificateType),
-          additionalInformation = additionalInformation
+          qualificationStatement = additionalInformation
         )
       )
     )
@@ -277,8 +279,7 @@ class UploadTemplateCsvParserSpec extends SpecBase with GuiceOneAppPerSuite {
 
       result match {
         case Invalid(errors) =>
-          errors.count(_.code == "invalid_section_row") mustBe 2
-          errors.forall(_.message == "The selected file must use the template") mustBe true
+          errors.count(_.error == InvalidTemplateError) mustBe 2
           errors.map(_.line).distinct mustBe Seq(11)
         case _ =>
           fail("Expected parser to fail when section row is invalid")
@@ -295,8 +296,7 @@ class UploadTemplateCsvParserSpec extends SpecBase with GuiceOneAppPerSuite {
 
       result match {
         case Invalid(errors) =>
-          errors.exists(_.code == "invalid_section_row") mustBe true
-          errors.exists(_.code == "header_mismatch") mustBe true
+          errors.count(_.error == InvalidTemplateError) mustBe 20
           errors.map(_.line).distinct must contain allOf (11, 13)
         case _ =>
           fail("Expected parser to fail when a descriptive row is missing")
@@ -314,14 +314,13 @@ class UploadTemplateCsvParserSpec extends SpecBase with GuiceOneAppPerSuite {
 
       result match {
         case Invalid(errors) =>
-          errors.exists(e => e.code == "header_mismatch" && e.column.contains("UTR")) mustBe true
-          errors.forall(_.message == "The selected file must use the template") mustBe true
+          errors.count(_.error == InvalidTemplateError) mustBe 1
         case _ =>
           fail("Expected parser to fail when headers are invalid")
       }
     }
 
-    "must return an error when a data row contains unexpected extra data columns" in {
+    "must ignore unexpected extra data columns" in {
       val rowWithExtraColumn = validQualifiedDataRow :+ "unexpected"
 
       val csv = toCsv(
@@ -330,19 +329,7 @@ class UploadTemplateCsvParserSpec extends SpecBase with GuiceOneAppPerSuite {
 
       val result = parser.parse(csv, notificationOnly = false)
 
-      result match {
-        case Invalid(errors) =>
-          errors must contain(
-            TemplateParseError(
-              line = 14,
-              column = None,
-              code = "unexpected_data_columns",
-              message = "The selected file must use the template"
-            )
-          )
-        case _ =>
-          fail("Expected parser to fail when a row contains unexpected extra data columns")
-      }
+      result must not be an[Invalid]
     }
 
     "must return an invalid CSV error when CSV content cannot be parsed" in {
@@ -352,14 +339,13 @@ class UploadTemplateCsvParserSpec extends SpecBase with GuiceOneAppPerSuite {
         case Invalid(errors) =>
           errors.headOption.value.line mustBe 0
           errors.headOption.value.column mustBe None
-          errors.headOption.value.code mustBe "invalid_csv"
-          errors.headOption.value.message must startWith("Unable to parse CSV content:")
+          errors.headOption.value.error mustBe TemplateError.InvalidTemplateError
         case _ =>
           fail("Expected parser to fail when CSV content cannot be parsed")
       }
     }
 
-    "must return row-level validation errors for invalid values" in {
+    "must return validation errors for invalid values" in {
       val badRow = validQualifiedDataRow
         .updated(0, generateAlphanumeric(161))
         .updated(1, "123")
@@ -379,15 +365,15 @@ class UploadTemplateCsvParserSpec extends SpecBase with GuiceOneAppPerSuite {
 
       result match {
         case Invalid(errors) =>
-          errors.map(_.code) must contain allOf (
-            "invalid_company_name",
-            "invalid_company_utr",
-            "invalid_company_crn",
-            "invalid_company_type",
-            "invalid_company_status",
-            "invalid_tax_regime_value",
-            "invalid_financial_year_end_date",
-            "missing_qualified_reason"
+          errors.map(_.error) must contain allOf (
+            TemplateError.CompanyNameError,
+            TemplateError.UtrError,
+            TemplateError.CrnError,
+            TemplateError.CompanyTypeError,
+            TemplateError.CompanyStatusError,
+            TemplateError.TaxRegimeError,
+            TemplateError.FinancialYearEndDateError,
+            TemplateError.QualificationStatementMissingError
           )
         case _ =>
           fail("Expected parser to fail when row values are invalid")
@@ -406,8 +392,8 @@ class UploadTemplateCsvParserSpec extends SpecBase with GuiceOneAppPerSuite {
 
       result match {
         case Invalid(errors) =>
-          errors.map(_.code) must contain(
-            "qualified_reason_too_long"
+          errors.map(_.error) must contain(
+            TemplateError.QualificationStatementTooLongError
           )
         case _ =>
           fail("Expected parser to fail when row values are invalid")
@@ -426,8 +412,8 @@ class UploadTemplateCsvParserSpec extends SpecBase with GuiceOneAppPerSuite {
 
       result match {
         case Invalid(errors) =>
-          errors.map(_.code) must contain(
-            "qualified_reason_is_prohibited"
+          errors.map(_.error) must contain(
+            TemplateError.QualificationStatementProhibitedError
           )
         case _ =>
           fail("Expected parser to fail when row values are invalid")
@@ -445,7 +431,7 @@ class UploadTemplateCsvParserSpec extends SpecBase with GuiceOneAppPerSuite {
 
       result match {
         case Invalid(errors) =>
-          errors.map(_.code) must contain("invalid_certificate_type")
+          errors.map(_.error) must contain(TemplateError.CertificateTypeError)
         case _ =>
           fail("Expected parser to fail when certificate type is blank without any tax regimes")
       }
@@ -462,7 +448,7 @@ class UploadTemplateCsvParserSpec extends SpecBase with GuiceOneAppPerSuite {
 
       result match {
         case Invalid(errors) =>
-          errors.map(_.code) must contain("invalid_certificate_type")
+          errors.map(_.error) must contain(TemplateError.CertificateTypeError)
         case _ =>
           fail("Expected parser to fail for unqualified certificate with selected tax regime")
       }
@@ -479,7 +465,7 @@ class UploadTemplateCsvParserSpec extends SpecBase with GuiceOneAppPerSuite {
 
       result match {
         case Invalid(errors) =>
-          errors.map(_.code) must contain("invalid_certificate_type")
+          errors.map(_.error) must contain(TemplateError.CertificateTypeError)
         case _ =>
           fail("Expected parser to fail for qualified certificate without selected tax regimes")
       }

@@ -25,7 +25,7 @@ import CertificateRulesValidator.*
 
 final case class CertificateParseResult(
     certificateType: Option[CertificateType],
-    additionalInformation: Option[String],
+    qualificationStatement: Option[String],
     errors: Vector[TemplateParseError]
 )
 
@@ -34,36 +34,33 @@ class CertificateRulesValidator @Inject() () {
   def parse(
       lineNumber: Int,
       certificateTypeValue: String,
-      additionalInformationValue: String,
-      taxFlags: ParsedTaxFlags,
-      rowErrorMessages: UploadTemplateRowErrorMessages
+      qualificationStatementValue: String,
+      taxFlags: ParsedTaxFlags
   ): CertificateParseResult = {
     val (certificateType, certificateErrors) =
-      parseCertificateTypeValue(lineNumber, certificateTypeValue, taxFlags, rowErrorMessages)
+      parseCertificateTypeValue(lineNumber, certificateTypeValue, taxFlags)
 
-    val additionalInformationErrors =
-      validateAdditionalInformationValue(
+    val qualificationStatementErrors =
+      validateQualificationStatementValue(
         lineNumber,
-        additionalInformationValue,
-        taxFlags.hasAnySelected,
-        rowErrorMessages
+        qualificationStatementValue,
+        taxFlags.hasAnySelected
       )
 
-    val additionalInformation =
-      Option(additionalInformationValue).filter(_.nonEmpty)
+    val qualificationStatement =
+      Option(qualificationStatementValue).filter(_.nonEmpty)
 
     CertificateParseResult(
       certificateType = certificateType,
-      additionalInformation = additionalInformation,
-      errors = certificateErrors ++ additionalInformationErrors
+      qualificationStatement = qualificationStatement,
+      errors = certificateErrors ++ qualificationStatementErrors
     )
   }
 
   private def parseCertificateTypeValue(
       lineNumber: Int,
       value: String,
-      taxFlags: ParsedTaxFlags,
-      rowErrorMessages: UploadTemplateRowErrorMessages
+      taxFlags: ParsedTaxFlags
   ): (Option[CertificateType], Vector[TemplateParseError]) = {
     val parsedFromValue =
       if value.isEmpty then None
@@ -85,9 +82,8 @@ class CertificateRulesValidator @Inject() () {
         Vector(
           TemplateParseError(
             line = lineNumber,
-            column = Some(ColumnNameMessageKeys(CertificateTypeIndex)),
-            code = "invalid_certificate_type",
-            message = rowErrorMessages.certificateType
+            column = Some(Column.CertificateType),
+            error = TemplateError.CertificateTypeError
           )
         )
       )
@@ -96,37 +92,33 @@ class CertificateRulesValidator @Inject() () {
     }
   }
 
-  private def validateAdditionalInformationValue(
+  private def validateQualificationStatementValue(
       lineNumber: Int,
       value: String,
-      hasAnyTaxRegimeSelected: Boolean,
-      rowErrorMessages: UploadTemplateRowErrorMessages
+      hasAnyTaxRegimeSelected: Boolean
   ): Vector[TemplateParseError] =
     if hasAnyTaxRegimeSelected && value.isEmpty then {
       Vector(
         TemplateParseError(
           line = lineNumber,
-          column = Some(ColumnNameMessageKeys(AdditionalInformationIndex)),
-          code = "missing_qualified_reason",
-          message = rowErrorMessages.additionalInformationMissing
+          column = Some(Column.QualificationStatement),
+          error = TemplateError.QualificationStatementMissingError
         )
       )
-    } else if hasAnyTaxRegimeSelected && value.length > additionalInformationMaxLength then {
+    } else if hasAnyTaxRegimeSelected && value.length > qualificationStatementMaxLength then {
       Vector(
         TemplateParseError(
           line = lineNumber,
-          column = Some(ColumnNameMessageKeys(AdditionalInformationIndex)),
-          code = "qualified_reason_too_long",
-          message = rowErrorMessages.additionalInformationTooLong
+          column = Some(Column.QualificationStatement),
+          error = TemplateError.QualificationStatementTooLongError
         )
       )
     } else if !hasAnyTaxRegimeSelected && value.nonEmpty then {
       Vector(
         TemplateParseError(
           line = lineNumber,
-          column = Some(ColumnNameMessageKeys(AdditionalInformationIndex)),
-          code = "qualified_reason_is_prohibited",
-          message = rowErrorMessages.additionalInformationProhibited
+          column = Some(Column.QualificationStatement),
+          error = TemplateError.QualificationStatementProhibitedError
         )
       )
     } else {
@@ -135,5 +127,5 @@ class CertificateRulesValidator @Inject() () {
 }
 
 object CertificateRulesValidator {
-  val additionalInformationMaxLength: Int = 5000
+  val qualificationStatementMaxLength: Int = 5000
 }

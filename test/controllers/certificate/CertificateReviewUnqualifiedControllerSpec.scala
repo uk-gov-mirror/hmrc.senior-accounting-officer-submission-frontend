@@ -149,7 +149,7 @@ object CertificateReviewUnqualifiedControllerSpec {
             exciseDuties = false,
             bankLevy = false,
             certificateType = Some(CertificateType.Unqualified),
-            additionalInformation = Some("example additional information")
+            qualificationStatement = Some("example additional information")
           )
         )
       ),
@@ -175,7 +175,7 @@ object CertificateReviewUnqualifiedControllerSpec {
             exciseDuties = false,
             bankLevy = false,
             certificateType = Some(CertificateType.Unqualified),
-            additionalInformation = Some("example additional information ")
+            qualificationStatement = Some("example additional information ")
           )
         )
       ),
@@ -201,7 +201,7 @@ object CertificateReviewUnqualifiedControllerSpec {
             exciseDuties = false,
             bankLevy = false,
             certificateType = Some(CertificateType.Qualified),
-            additionalInformation = Some("example additional information 3")
+            qualificationStatement = Some("example additional information 3")
           )
         )
       )

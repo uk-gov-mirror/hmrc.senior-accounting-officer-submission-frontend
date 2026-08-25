@@ -52,7 +52,7 @@ class ParsedSubmissionRowSpec extends SpecBase {
             exciseDuties = false,
             bankLevy = false,
             certificateType = Some(CertificateType.Qualified),
-            additionalInformation = Some("Additional context")
+            qualificationStatement = Some("Additional context")
           )
         )
       )
@@ -119,7 +119,7 @@ class ParsedSubmissionRowSpec extends SpecBase {
             exciseDuties = true,
             bankLevy = false,
             certificateType = Some(CertificateType.Qualified),
-            additionalInformation = Some(testAdditionalInformation)
+            qualificationStatement = Some(testAdditionalInformation)
           )
         )
       ).toQualifiedCompany
@@ -172,7 +172,7 @@ class ParsedSubmissionRowSpec extends SpecBase {
             exciseDuties = false,
             bankLevy = false,
             certificateType = Some(CertificateType.Unqualified),
-            additionalInformation = Some(testAdditionalInformation)
+            qualificationStatement = Some(testAdditionalInformation)
           )
         )
       ).toQualifiedCompany
@@ -208,7 +208,7 @@ class ParsedSubmissionRowSpec extends SpecBase {
             exciseDuties = false,
             bankLevy = false,
             certificateType = Some(CertificateType.Unqualified),
-            additionalInformation = Some("example additional information")
+            qualificationStatement = Some("example additional information")
           )
         )
       ).toUnqualifiedCompany
@@ -250,7 +250,7 @@ class ParsedSubmissionRowSpec extends SpecBase {
             exciseDuties = true,
             bankLevy = false,
             certificateType = Some(CertificateType.Qualified),
-            additionalInformation = Some("example additional information")
+            qualificationStatement = Some("example additional information")
           )
         )
       ).toUnqualifiedCompany

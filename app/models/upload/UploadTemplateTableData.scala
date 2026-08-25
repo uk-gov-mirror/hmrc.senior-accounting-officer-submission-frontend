@@ -17,6 +17,7 @@
 package models.upload
 
 import play.api.libs.json.{Json, OFormat}
+import services.csvparser.UploadTemplateCsvSchema.TemplateError
 
 final case class UploadTemplateTableData(
     rows: Seq[ParsedSubmissionRow],
@@ -26,18 +27,11 @@ final case class UploadTemplateTableData(
 object UploadTemplateTableData {
   given OFormat[UploadTemplateTableData] = Json.format[UploadTemplateTableData]
 
-  private def invalidTemplateCodes: Set[String] = Set(
-    "missing_section_row",
-    "invalid_section_row",
-    "missing_header_row",
-    "unexpected_header_columns",
-    "header_mismatch"
-  )
-
   extension (data: UploadTemplateTableData) {
     def isEmpty: Boolean                 = data.errors.isEmpty && data.rows.isEmpty
-    def notSaoTemplateOrIsEmpty: Boolean = isEmpty || data.errors.exists(err => invalidTemplateCodes.contains(err.code))
-    def hasErrors                        = data.notSaoTemplateOrIsEmpty || data.errors.nonEmpty
+    def notSaoTemplateOrIsEmpty: Boolean =
+      isEmpty || data.errors.exists(e => e.error == TemplateError.InvalidTemplateError)
+    def hasErrors = data.notSaoTemplateOrIsEmpty || data.errors.nonEmpty
   }
 
 }

@@ -22,30 +22,27 @@ import services.csvparser.UploadTemplateStructureValidator
 
 class UploadTemplateStructureValidatorSpec extends SpecBase {
 
-  private val validator                = new UploadTemplateStructureValidator()
-  private val templateFileErrorMessage = "The selected file must use the template"
+  private val validator = new UploadTemplateStructureValidator()
 
   "validateSectionRow" - {
 
     "must return a missing_section_row error when no section row exists" in {
-      val errors = validator.validateSectionRow(None, templateFileErrorMessage)
+      val errors = validator.validateSectionRow(None)
 
       errors mustBe Seq(
         models.upload.TemplateParseError(
           line = SectionLineNumber,
           column = None,
-          code = "missing_section_row",
-          message = templateFileErrorMessage
+          error = TemplateError.InvalidTemplateError
         )
       )
     }
 
     "must return both invalid_section_row errors when both section cells are wrong" in {
       val row    = Vector("", "wrong", "", "", "", "", "also-wrong")
-      val errors = validator.validateSectionRow(Some(row), templateFileErrorMessage)
+      val errors = validator.validateSectionRow(Some(row))
 
-      errors.map(_.code) mustBe Seq("invalid_section_row", "invalid_section_row")
-      errors.flatMap(_.column) must contain allOf ("Notification", "Certificate")
+      errors.map(_.error) mustBe Seq(TemplateError.InvalidTemplateError, TemplateError.InvalidTemplateError)
       errors.map(_.line).distinct mustBe Seq(SectionLineNumber)
     }
   }
@@ -53,14 +50,13 @@ class UploadTemplateStructureValidatorSpec extends SpecBase {
   "validateHeaderRow" - {
 
     "must return a missing_header_row error when no header row exists" in {
-      val errors = validator.validateHeaderRow(None, templateFileErrorMessage)
+      val errors = validator.validateHeaderRow(None)
 
       errors mustBe Seq(
         models.upload.TemplateParseError(
           line = HeaderLineNumber,
           column = None,
-          code = "missing_header_row",
-          message = templateFileErrorMessage
+          error = TemplateError.InvalidTemplateError
         )
       )
     }
@@ -68,9 +64,9 @@ class UploadTemplateStructureValidatorSpec extends SpecBase {
     "must return unexpected_header_columns when non-empty extra columns are present" in {
       val headerWithExtra = ExpectedHeaders.toVector :+ "extra-header"
 
-      val errors = validator.validateHeaderRow(Some(headerWithExtra), templateFileErrorMessage)
+      val errors = validator.validateHeaderRow(Some(headerWithExtra))
 
-      errors.exists(_.code == "unexpected_header_columns") mustBe true
+      errors.exists(_.error == TemplateError.InvalidTemplateError) mustBe true
       errors.map(_.line).distinct mustBe Seq(HeaderLineNumber)
     }
   }

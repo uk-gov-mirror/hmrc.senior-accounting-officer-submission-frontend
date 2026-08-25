@@ -17,12 +17,12 @@
 package models.upload
 
 import play.api.libs.json.{Json, OFormat}
+import services.csvparser.UploadTemplateCsvSchema.{Column, TemplateError}
 
 final case class TemplateParseError(
     line: Int,
-    column: Option[String],
-    code: String,
-    message: String
+    column: Option[Column],
+    error: TemplateError
 )
 
 object TemplateParseError {

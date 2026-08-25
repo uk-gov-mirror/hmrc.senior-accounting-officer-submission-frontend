@@ -18,6 +18,7 @@ package models.upload
 
 import base.SpecBase
 import play.api.libs.json.{JsSuccess, Json}
+import services.csvparser.UploadTemplateCsvSchema.{Column, TemplateError}
 
 import java.time.LocalDate
 
@@ -50,7 +51,7 @@ class UploadTemplateTableDataSpec extends SpecBase {
                 exciseDuties = false,
                 bankLevy = false,
                 certificateType = Some(CertificateType.Qualified),
-                additionalInformation = Some("Reason")
+                qualificationStatement = Some("Reason")
               )
             )
           )
@@ -58,9 +59,8 @@ class UploadTemplateTableDataSpec extends SpecBase {
         errors = Seq(
           TemplateParseError(
             line = 9,
-            column = Some("Company UTR"),
-            code = "invalid_company_utr",
-            message = "Enter a valid Company UTR. It must be 10 digits long"
+            column = Some(Column.Utr),
+            error = TemplateError.UtrError
           )
         )
       )

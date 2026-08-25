@@ -15,6 +15,7 @@
  *@
 
 @import controllers.notification.{ routes => notificationRoutes }
+
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
@@ -24,7 +25,7 @@
 @(tableData: models.upload.UploadTemplateTableData)(using request: Request[?], messages: Messages)
 
 @asDisplay(value: Option[String]) = {
-    @value.fold("-")(messages(_))
+    @value.fold("-")(identity)
 }
 
 @maximumLinesWithErrorsToDisplay = @{ 50 }
@@ -95,8 +96,8 @@
                             @if(index == 0) {
                                 <td class="govuk-table__cell" rowspan="@errorsForLine.size">@line</td>
                             }
-                            <td class="govuk-table__cell">@asDisplay(error.column)</td>
-                            <td class="govuk-table__cell">@error.message</td>
+                            <td class="govuk-table__cell">@asDisplay(error.column.map(_.resolve))</td>
+                            <td class="govuk-table__cell">@error.error.resolve</td>
                         </tr>
                     }
                 }

@@ -18,6 +18,7 @@ package models.upload
 
 import base.SpecBase
 import play.api.libs.json.{JsSuccess, Json}
+import services.csvparser.UploadTemplateCsvSchema.{Column, TemplateError}
 
 class TemplateParseErrorSpec extends SpecBase {
 
@@ -26,9 +27,8 @@ class TemplateParseErrorSpec extends SpecBase {
     "must round-trip with a column value" in {
       val error = TemplateParseError(
         line = 9,
-        column = Some("Company UTR"),
-        code = "invalid_company_utr",
-        message = "Company UTR must be 10 digits"
+        column = Some(Column.Utr),
+        error = TemplateError.UtrError
       )
 
       Json.toJson(error).validate[TemplateParseError] mustBe JsSuccess(error)
@@ -38,8 +38,7 @@ class TemplateParseErrorSpec extends SpecBase {
       val error = TemplateParseError(
         line = 8,
         column = None,
-        code = "missing_header_row",
-        message = "The selected file must use the template"
+        error = TemplateError.InvalidTemplateError
       )
 
       Json.toJson(error).validate[TemplateParseError] mustBe JsSuccess(error)

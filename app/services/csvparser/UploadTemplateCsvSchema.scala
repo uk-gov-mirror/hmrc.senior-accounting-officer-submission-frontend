@@ -16,18 +16,18 @@
 
 package services.csvparser
 
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatterBuilder
-import java.time.format.ResolverStyle
-import java.time.temporal.ChronoField
+import play.api.i18n.Messages
+import play.api.libs.json.*
+
+import scala.util.Try
 
 object UploadTemplateCsvSchema {
 
   type CsvRow = Vector[String]
 
-  private val LinesToSkipBeforeSectionRow = 10
-  val SectionLineNumber: Int              = LinesToSkipBeforeSectionRow + 1
-  val HeaderLineNumber: Int               = SectionLineNumber + 2
+  private val LinesToSkipBeforeSectionRow: Int = 10
+  val SectionLineNumber: Int                   = LinesToSkipBeforeSectionRow + 1
+  val HeaderLineNumber: Int                    = SectionLineNumber + 2
 
   private val DataStartLineNumber: Int = HeaderLineNumber + 1
   val SectionRowIndex: Int             = SectionLineNumber - 1
@@ -61,78 +61,72 @@ object UploadTemplateCsvSchema {
     "Your explanation should include:\n- why the SAO provided a qualified certificate\n- what went wrong with the tax accounting arrangements and why, not just a list of errors"
   )
 
-  val ColumnNameMessageKeys: Seq[String] = Seq(
-    "Company name",
-    "CRN",
-    "UTR",
-    "Company type (select one)",
-    "Company status (select one)",
-    "Financial year end (DD/MM/YYYY)",
-    "Corporation tax",
-    "VAT (Value added tax)",
-    "PAYE (Pay As You Earn)",
-    "Insurance premium tax",
-    "Stamp duty land tax",
-    "Stamp duty reserve tax",
-    "Petroleum revenue tax",
-    "Customs Duties",
-    "Excise Duties",
-    "Bank Levy",
-    "Certificate type",
-    "Explain why the certificate is qualified"
-  )
+  enum Column(val columnIndex: Int, val messageKey: String) {
+    case CompanyName            extends Column(0, "uploadTemplateCsvParser.column.CompanyName")
+    case Crn                    extends Column(1, "uploadTemplateCsvParser.column.Crn")
+    case Utr                    extends Column(2, "uploadTemplateCsvParser.column.Utr")
+    case CompanyType            extends Column(3, "uploadTemplateCsvParser.column.CompanyType")
+    case CompanyStatus          extends Column(4, "uploadTemplateCsvParser.column.CompanyStatus")
+    case FinancialYearEndDate   extends Column(5, "uploadTemplateCsvParser.column.FinancialYearEndDate")
+    case CorporationTax         extends Column(6, "uploadTemplateCsvParser.column.CorporationTax")
+    case Vat                    extends Column(7, "uploadTemplateCsvParser.column.Vat")
+    case Paye                   extends Column(8, "uploadTemplateCsvParser.column.Paye")
+    case InsurancePremiumTax    extends Column(9, "uploadTemplateCsvParser.column.InsurancePremiumTax")
+    case StampDutyLandTax       extends Column(10, "uploadTemplateCsvParser.column.StampDutyLandTax")
+    case StampDutyReserveTax    extends Column(11, "uploadTemplateCsvParser.column.StampDutyReserveTax")
+    case PetroleumRevenueTax    extends Column(12, "uploadTemplateCsvParser.column.PetroleumRevenueTax")
+    case CustomsDuties          extends Column(13, "uploadTemplateCsvParser.column.CustomsDuties")
+    case ExciseDuties           extends Column(14, "uploadTemplateCsvParser.column.ExciseDuties")
+    case BankLevy               extends Column(15, "uploadTemplateCsvParser.column.BankLevy")
+    case CertificateType        extends Column(16, "uploadTemplateCsvParser.column.CertificateType")
+    case QualificationStatement extends Column(17, "uploadTemplateCsvParser.column.QualificationStatement")
+  }
 
-  val CompanyNameIndex          = 0
-  val CompanyCrnIndex           = 1
-  val CompanyUtrIndex           = 2
-  val CompanyTypeIndex          = 3
-  val CompanyStatusIndex        = 4
-  val FinancialYearEndDateIndex = 5
+  object Column {
+    given Reads[Column] = JsPath
+      .read[String]
+      .flatMapResult(name =>
+        Try(Column.valueOf(name)).fold(_ => JsError("Not a valid Column"), value => JsSuccess(value))
+      )
 
-  val CorporationTaxIndex        = 6
-  val ValueAddedTaxIndex         = 7
-  val PayeIndex                  = 8
-  val InsurancePremiumTaxIndex   = 9
-  val StampDutyLandTaxIndex      = 10
-  val StampDutyReserveTaxIndex   = 11
-  val PetroleumRevenueTaxIndex   = 12
-  val CustomsDutiesIndex         = 13
-  val ExciseDutiesIndex          = 14
-  val BankLevyIndex              = 15
-  val CertificateTypeIndex       = 16
-  val AdditionalInformationIndex = 17
+    given Writes[Column] = Writes[Column](r => JsString(r.toString))
 
-  val FinancialYearEndDateFormatter: DateTimeFormatter =
-    DateTimeFormatterBuilder()
-      .appendPattern("dd/MM/yyyy")
-      .parseDefaulting(ChronoField.ERA, 1)
-      .toFormatter
-      .withResolverStyle(ResolverStyle.STRICT)
+    extension (column: Column) {
+      def resolve(using messages: Messages): String = messages(column.messageKey)
+    }
+  }
 
-  val TemplateFileErrorMessageKey =
-    "uploadTemplateCsvParser.error.templateFile"
-  val CompanyNameErrorMessageKey =
-    "uploadTemplateCsvParser.error.companyName"
-  val CompanyUtrErrorMessageKey =
-    "uploadTemplateCsvParser.error.companyUtr"
-  val CompanyCrnErrorMessageKey =
-    "uploadTemplateCsvParser.error.companyCrn"
-  val CompanyTypeErrorMessageKey =
-    "uploadTemplateCsvParser.error.companyType"
-  val CompanyStatusErrorMessageKey =
-    "uploadTemplateCsvParser.error.companyStatus"
-  val FinancialYearEndDateErrorMessageKey =
-    "uploadTemplateCsvParser.error.financialYearEndDate"
-  val TaxRegimeErrorMessageKey =
-    "uploadTemplateCsvParser.error.taxRegime"
-  val CertificateTypeErrorMessageKey =
-    "uploadTemplateCsvParser.error.certificateType"
-  val AdditionalInformationMissingErrorMessageKey =
-    "uploadTemplateCsvParser.error.additionalInformation.missing"
-  val AdditionalInformationTooLongErrorMessageKey =
-    "uploadTemplateCsvParser.error.additionalInformation.tooLong"
-  val AdditionalInformationProhibitedMessageKey =
-    "uploadTemplateCsvParser.error.additionalInformation.prohibited"
+  enum TemplateError(val messageKey: String) {
+    case InvalidTemplateError      extends TemplateError("uploadTemplateCsvParser.error.templateFile")
+    case CompanyNameError          extends TemplateError("uploadTemplateCsvParser.error.companyName")
+    case UtrError                  extends TemplateError("uploadTemplateCsvParser.error.companyUtr")
+    case CrnError                  extends TemplateError("uploadTemplateCsvParser.error.companyCrn")
+    case CompanyTypeError          extends TemplateError("uploadTemplateCsvParser.error.companyType")
+    case CompanyStatusError        extends TemplateError("uploadTemplateCsvParser.error.companyStatus")
+    case FinancialYearEndDateError extends TemplateError("uploadTemplateCsvParser.error.financialYearEndDate")
+    case TaxRegimeError            extends TemplateError("uploadTemplateCsvParser.error.taxRegime")
+    case CertificateTypeError      extends TemplateError("uploadTemplateCsvParser.error.certificateType")
+    case QualificationStatementMissingError
+        extends TemplateError("uploadTemplateCsvParser.error.qualificationStatement.missing")
+    case QualificationStatementTooLongError
+        extends TemplateError("uploadTemplateCsvParser.error.qualificationStatement.tooLong")
+    case QualificationStatementProhibitedError
+        extends TemplateError("uploadTemplateCsvParser.error.qualificationStatement.prohibited")
+  }
+
+  object TemplateError {
+    given Reads[TemplateError] = JsPath
+      .read[String]
+      .flatMapResult(name =>
+        Try(TemplateError.valueOf(name)).fold(_ => JsError("Not a valid TemplateError"), value => JsSuccess(value))
+      )
+
+    given Writes[TemplateError] = Writes[TemplateError](r => JsString(r.toString))
+
+    extension (err: TemplateError) {
+      def resolve(using messages: Messages): String = messages(err.messageKey)
+    }
+  }
 
   def cellValue(row: CsvRow, index: Int): String =
     if index < row.length then row(index).trim else ""

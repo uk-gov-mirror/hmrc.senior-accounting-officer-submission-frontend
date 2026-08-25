@@ -17,10 +17,8 @@
 package services.csvparser
 
 import com.github.tototoshi.csv.CSVReader
-import models.upload.TemplateParseError
-import models.upload.TemplateParseResult
 import models.upload.TemplateParseResult.Invalid
-import play.api.i18n.{Messages, MessagesApi}
+import models.upload.{TemplateParseError, TemplateParseResult}
 import services.csvparser.UploadTemplateCsvSchema.*
 
 import scala.util.{Failure, Success, Try}
@@ -29,33 +27,12 @@ import java.io.StringReader
 import javax.inject.Inject
 
 class UploadTemplateCsvParser @Inject() (
-    messagesApi: MessagesApi,
     structureValidator: UploadTemplateStructureValidator,
     rowParser: UploadTemplateRowParser
 ) {
 
-  private def message(key: String, messages: Messages): String = messages(key)
-
-  private def templateFileErrorMessage(messages: Messages): String =
-    message(TemplateFileErrorMessageKey, messages)
-
-  private def rowErrorMessages(messages: Messages) = UploadTemplateRowErrorMessages(
-    companyName = message(CompanyNameErrorMessageKey, messages),
-    companyUtr = message(CompanyUtrErrorMessageKey, messages),
-    companyCrn = message(CompanyCrnErrorMessageKey, messages),
-    companyType = message(CompanyTypeErrorMessageKey, messages),
-    companyStatus = message(CompanyStatusErrorMessageKey, messages),
-    financialYearEndDate = message(FinancialYearEndDateErrorMessageKey, messages),
-    taxRegime = message(TaxRegimeErrorMessageKey, messages),
-    certificateType = message(CertificateTypeErrorMessageKey, messages),
-    additionalInformationMissing = message(AdditionalInformationMissingErrorMessageKey, messages),
-    additionalInformationTooLong = message(AdditionalInformationTooLongErrorMessageKey, messages),
-    additionalInformationProhibited = message(AdditionalInformationProhibitedMessageKey, messages)
-  )
-
   def parse(
       csv: String,
-      messages: Messages = messagesApi.preferred(Seq.empty),
       notificationOnly: Boolean
   ): TemplateParseResult = {
     Try(parseCsvRows(csv)) match {
@@ -63,25 +40,22 @@ class UploadTemplateCsvParser @Inject() (
         Invalid(
           Seq(
             TemplateParseError(
-              0,
-              None,
-              "invalid_csv",
-              s"Unable to parse CSV content: ${err.getMessage}"
+              line = 0,
+              column = None,
+              error = TemplateError.InvalidTemplateError
             )
           )
         )
 
       case Success(rows) =>
         val errors =
-          structureValidator.validateSectionRow(rows.lift(SectionRowIndex), templateFileErrorMessage(messages)) ++
-            structureValidator.validateHeaderRow(rows.lift(HeaderRowIndex), templateFileErrorMessage(messages))
+          structureValidator.validateSectionRow(rows.lift(SectionRowIndex)) ++
+            structureValidator.validateHeaderRow(rows.lift(HeaderRowIndex))
 
         errors match {
           case Nil =>
             rowParser.parseDataRows(
               rows,
-              rowErrorMessages(messages),
-              templateFileErrorMessage(messages),
               notificationOnly
             )
           case nonEmpty => Invalid(nonEmpty)

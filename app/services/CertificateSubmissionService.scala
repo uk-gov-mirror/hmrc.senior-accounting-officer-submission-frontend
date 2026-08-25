@@ -120,7 +120,7 @@ class CertificateSubmissionService @Inject() (
       isCustomsDutiesQualified = certificate.customsDuties,
       isExciseDutiesQualified = certificate.exciseDuties,
       isBankLevyQualified = certificate.bankLevy,
-      qualificationStatement = certificate.additionalInformation
+      qualificationStatement = certificate.qualificationStatement
     )
 
 }
