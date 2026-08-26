@@ -204,7 +204,7 @@ object NotificationTaskListViewSpec {
   val pageHeading             = "Submit a notification"
   val pageTitle               = "Submit a notification"
   val paragraphs: Seq[String] = Seq(
-    "Submit a notification for each Senior Accounting Officer (SAO) in your group. Each notification must include the SAO’s name and all the entities they were responsible for during the financial year."
+    "Submit one notification for each SAO in your organisation. Each notification must include the SAO’s details and all the companies they were responsible for in a previous financial year."
   )
   val provideSaoDetailsLinkText  = "Provide the SAO’s details"
   val uploadTemplateLinkText     = "Upload the submission template"

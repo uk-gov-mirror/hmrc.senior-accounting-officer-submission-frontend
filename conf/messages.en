@@ -49,7 +49,7 @@ timeout.signOut = Sign out
 
 notificationTaskList.title = Submit a notification
 notificationTaskList.heading = Submit a notification
-notificationTaskList.paragraph1 = Submit a notification for each Senior Accounting Officer (SAO) in your group. Each notification must include the SAO’s name and all the entities they were responsible for during the financial year.
+notificationTaskList.paragraph1 = Submit one notification for each SAO in your organisation. Each notification must include the SAO’s details and all the companies they were responsible for in a previous financial year.
 notificationTaskList.provideSaoDetailsLinkText = Provide the SAO’s details
 notificationTaskList.uploadNotificationLinkText = Upload the submission template
 notificationTaskList.submitNotificationLinkText = Submit the notification
