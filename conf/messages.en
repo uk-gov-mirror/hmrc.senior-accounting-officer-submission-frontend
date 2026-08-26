@@ -312,7 +312,8 @@ uploadTemplateCsvParser.error.qualificationStatement.missing = Explain why the c
 uploadTemplateCsvParser.error.qualificationStatement.tooLong = The explanation you give must be 5000 characters or less
 uploadTemplateCsvParser.error.qualificationStatement.prohibited = Leave the explanation cell blank. Only companies with a qualified certificate can provide an explanation
 
-notificationSingleSaoOfficerName.title = Submit a notification - SAO full name
+notificationSingleSaoOfficerName.title = What is the name of the SAO?
+notificationSingleSaoOfficerName.section = Submit a notification
 notificationSingleSaoOfficerName.heading = What is the name of the SAO?
 notificationSingleSaoOfficerName.caption = Submit a notification
 notificationSingleSaoOfficerName.checkYourAnswersLabel = Senior Accounting Officer

@@ -27,7 +27,7 @@
 
 @(form: Form[?], mode: Mode)(using request: Request[?], messages: Messages)
 
-@layout(pageTitle = title(form, messages("notificationSingleSaoOfficerName.title"))) {
+@layout(pageTitle = title(form, messages("notificationSingleSaoOfficerName.title"), Some("notificationSingleSaoOfficerName.section"))) {
 
     @formHelper(action = notificationRoutes.NotificationSingleSaoOfficerNameController.onSubmit(mode)) {
 

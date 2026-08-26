@@ -146,7 +146,7 @@ class NotificationSingleSaoOfficerNameViewSpec extends ViewSpecBase[Notification
 
 object NotificationSingleSaoOfficerNameViewSpec {
   val pageHeading = "What is the name of the SAO?"
-  val pageTitle   = "Submit a notification - SAO full name"
+  val pageTitle   = "What is the name of the SAO? - Submit a notification"
   val pageCaption = "Submit a notification"
 
   val testInputValue = "Firstname Lastname"
