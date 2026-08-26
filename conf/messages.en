@@ -47,6 +47,8 @@ timeout.message = For security reasons, you will be signed out of this service i
 timeout.keepAlive = Stay signed in
 timeout.signOut = Sign out
 
+section.notification = Submit a notification
+
 notificationTaskList.title = Submit a notification
 notificationTaskList.heading = Submit a notification
 notificationTaskList.paragraph1 = Submit one notification for each SAO in your organisation. Each notification must include the SAO’s details and all the companies they were responsible for in a previous financial year.
@@ -102,12 +104,12 @@ template.guidance.subheading6 = Complete certificate at a different time.
 template.guidance.subheading6.list1.item1 = Upload your template again with certificate information filled out.
 template.guidance.subheading6.list1.item2 = Complete the certificate journey and sign the declaration.
 
-notificationUploadForm.title = Upload a submission template for your notification
+notificationUploadForm.title = Upload a submission template
 notificationUploadForm.heading = Upload a submission template
 notificationUploadForm.caption = Submit a notification
-notificationUploadForm.paragraph1 = The template must be uploaded in CSV format. If you already have the template saved in a different format (such as .xls or .xlsx), you must save it again as a CSV file.
+notificationUploadForm.paragraph1 = The template must be uploaded in CSV format. If your template is saved as .xls or .xlsx, save it again as a CSV (comma delimited) (.csv) file before uploading.
 notificationUploadForm.paragraph2 = Read guidance on how to complete the submission template (opens in new tab)
-notificationUploadForm.inset.text = If your group has more than one SAO, you must submit a separate notification for each SAO. After you complete one submission, you can start another.
+notificationUploadForm.inset.text = If your group has more than one SAO, you must submit a separate notification for each one. After you complete this submission, you can start another notification.
 
 notificationGuidance.title = Submit a notification
 notificationGuidance.heading = Submit a notification

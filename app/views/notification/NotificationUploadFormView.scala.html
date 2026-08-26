@@ -27,7 +27,7 @@
 
 @(form: Form[?], upscanInitiateResponse: UpscanInitiateResponse)(using request: Request[?], messages: Messages)
 
-@layout(pageTitle = title(form, messages("notificationUploadForm.title"))) {
+@layout(pageTitle = title(form, messages("notificationUploadForm.title"), Some(messages("section.notification")))) {
 
     <form method="POST"
           action=@upscanInitiateResponse.postTarget
