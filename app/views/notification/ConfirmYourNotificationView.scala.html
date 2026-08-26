@@ -23,7 +23,7 @@
 
 @()(using request: Request[?], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("confirmYourNotification.title"))) {
+@layout(pageTitle = titleNoForm(messages("confirmYourNotification.title"), Some(messages("section.notification")))) {
 
     <span class="govuk-caption-l">@messages("confirmYourNotification.caption")</span>
     <h1 class="govuk-heading-l">@messages("confirmYourNotification.heading")</h1>
@@ -35,10 +35,6 @@
         <li>@messages("confirmYourNotification.list1.item1")</li>
         <li>@messages("confirmYourNotification.list1.item2")</li>
     </ul>
-
-    <div class="govuk-inset-text">
-        @messages("confirmYourNotification.inset.text")
-    </div>
 
     @formHelper(action = notificationRoutes.ConfirmYourNotificationController.onSubmit()) {
         @govukButton(
