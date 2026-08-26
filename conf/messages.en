@@ -122,13 +122,13 @@ notificationGuidance.paragraph3 = Only one notification can be submitted per fin
 notificationGuidance.inset.text = You can only submit the notification after the financial year has ended. The deadline is 6 months after the end of the financial year for public limited companies and 9 months after for other companies.
 
 notificationAdditionalInformation.caption = Submit a notification
-notificationAdditionalInformation.title = Notification details
-notificationAdditionalInformation.heading = Additional information
-notificationAdditionalInformation.paragraph1 = Tell us if there’s anything we should know about your notification or the companies listed.
+notificationAdditionalInformation.title = Additional information about your notification
+notificationAdditionalInformation.heading = Additional information about your notification
+notificationAdditionalInformation.paragraph1 = Tell us if there is anything we should know about your notification.
 notificationAdditionalInformation.paragraph2 = This could include:
 notificationAdditionalInformation.list1.item1 = a company’s status changing, such as becoming dormant or going into liquidation
 notificationAdditionalInformation.list1.item2 = anything else relevant to the companies listed
-notificationAdditionalInformation.label = Provide information about your notification
+notificationAdditionalInformation.label = Is there anything else we should know about your notification?
 notificationAdditionalInformation.checkYourAnswersLabel = Additional information
 notificationAdditionalInformation.error.required = Enter information about your notification or skip
 notificationAdditionalInformation.error.length = Additional information must be 5000 characters or less

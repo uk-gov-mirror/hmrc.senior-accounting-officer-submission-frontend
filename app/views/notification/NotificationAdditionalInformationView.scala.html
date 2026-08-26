@@ -30,7 +30,7 @@
 
 @(form: Form[?], mode: Mode)(using request: Request[?], messages: Messages)
 
-@layout(pageTitle = title(form, messages("notificationAdditionalInformation.title"))) {
+@layout(pageTitle = title(form, messages("notificationAdditionalInformation.title"), Some(messages("section.notification")))) {
 
     @formHelper(action = notificationRoutes.NotificationAdditionalInformationController.onSubmit(mode)) {
         @if(form.errors.nonEmpty) {
