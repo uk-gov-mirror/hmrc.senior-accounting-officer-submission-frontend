@@ -33,13 +33,12 @@
 
 @uploadUrl = @{notificationRoutes.NotificationUploadFormController.onPageLoad().url}
 
-@layout(pageTitle = titleNoForm(messages("uploadTemplateTable.title"))) {
+@layout(pageTitle = titleNoForm(messages("uploadTemplateTable.title"), Some(messages("section.notification")))) {
     <span class="govuk-caption-m">@messages("uploadTemplateTable.caption")</span>
-    <h1 class="govuk-heading-xl">@messages("uploadTemplateTable.heading")</h1>
-    <p class="govuk-body">@messages("uploadTemplateTable.paragraph1")</p>
-    <p class="govuk-body">@messages("uploadTemplateTable.paragraph2", tableData.rows.size.toString, saoName)</p>
+    <h1 class="govuk-heading-l">@messages("uploadTemplateTable.heading")</h1>
+    <p class="govuk-body">@messages("uploadTemplateTable.paragraph1", tableData.rows.size.toString, saoName)</p>
     <p class="govuk-body">
-        @Html(messages("uploadTemplateTable.paragraph3WithLink", uploadUrl))
+        @Html(messages("uploadTemplateTable.paragraph2WithLink", uploadUrl))
     </p>
 
 
@@ -47,8 +46,8 @@
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 <th scope="col" class="govuk-table__header">@messages("uploadTemplateTable.table.companyName")</th>
-                <th scope="col" class="govuk-table__header">@messages("uploadTemplateTable.table.companyUtr")</th>
                 <th scope="col" class="govuk-table__header">@messages("uploadTemplateTable.table.companyCrn")</th>
+                <th scope="col" class="govuk-table__header">@messages("uploadTemplateTable.table.companyUtr")</th>
                 <th scope="col" class="govuk-table__header">@messages("uploadTemplateTable.table.companyType")</th>
                 <th scope="col" class="govuk-table__header">@messages("uploadTemplateTable.table.companyStatus")</th>
                 <th scope="col" class="govuk-table__header">@messages("uploadTemplateTable.table.financialYearEndDate")</th>
@@ -63,8 +62,8 @@
                 @for(row <- tableData.rows) {
                     <tr class="govuk-table__row">
                         <td class="govuk-table__cell">@row.notification.companyName</td>
-                        <td class="govuk-table__cell">@row.notification.companyUtr.value</td>
                         <td class="govuk-table__cell">@asDisplayCrn(row.notification.companyCrn)</td>
+                        <td class="govuk-table__cell">@row.notification.companyUtr.value</td>
                         <td class="govuk-table__cell">@row.notification.companyType</td>
                         <td class="govuk-table__cell">@row.notification.companyStatus</td>
                         <td class="govuk-table__cell">@row.notification.financialYearEndDateDisplay</td>

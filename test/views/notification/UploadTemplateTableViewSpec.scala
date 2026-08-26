@@ -23,8 +23,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import views.html.notification.UploadTemplateTableView
 
-import scala.jdk.CollectionConverters.*
-
 import java.time.LocalDate
 
 import UploadTemplateTableViewSpec.*
@@ -44,7 +42,7 @@ class UploadTemplateTableViewSpec extends ViewSpecBase[UploadTemplateTableView] 
       hasError = false
     )
 
-    doc.createTestsWithParagraphs(paragraphs = Seq(paragraphLine1, paragraphLine2, paragraphLine3))
+    doc.createTestsWithParagraphs(paragraphs)
 
     doc.createTestsWithCaption(pageCaption)
 
@@ -67,14 +65,13 @@ class UploadTemplateTableViewSpec extends ViewSpecBase[UploadTemplateTableView] 
       buttonText = "Continue"
     )
 
-    "must render the SAO name, company count and upload link" in {
-      doc.text() must include(saoName)
-      doc.text() must include("There were 1 companies")
-      val uploadLink =
-        doc.select("a.govuk-link").asScala.find(_.text() == "upload an updated submission template").value
-      uploadLink.attr("href") must endWith("/notification/upload")
-    }
-
+    doc.getMainContent
+      .select("a.govuk-link")
+      .get(0)
+      .createTestWithLink(
+        linkText,
+        notificationRoutes.NotificationUploadFormController.onPageLoad().url
+      )
   }
 }
 
@@ -112,14 +109,13 @@ object UploadTemplateTableViewSpec {
     errors = Seq.empty
   )
 
-  val pageHeading            = "Review the companies in your notification"
-  val pageTitle              = "Review the companies in your notification"
-  val saoName                = "Jane Smith"
-  val paragraphLine1: String =
-    "This list is taken from the notification details in the submission template you uploaded."
-  val paragraphLine2: String =
-    s"There were ${tableData.rows.size} companies $saoName was responsible for during the financial year."
-  val paragraphLine3: String = "If this is not correct, upload an updated submission template before continuing."
-  val pageCaption            = "Submit a notification"
-
+  val pageHeading = "Review the companies in your notification"
+  val pageTitle   = "Review the companies in your notification - Submit a notification"
+  val saoName     = "Jane Smith"
+  val paragraphs  = Seq(
+    s"This list is from your submission template. It shows ${tableData.rows.size} companies $saoName was responsible for in the financial year.",
+    "If any companies details are missing or incorrect, upload an updated submission template before continuing."
+  )
+  val pageCaption = "Submit a notification"
+  val linkText    = "upload an updated submission template"
 }

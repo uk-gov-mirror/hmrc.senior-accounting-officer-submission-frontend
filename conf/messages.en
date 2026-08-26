@@ -257,9 +257,8 @@ notificationMoreThanOneSao.no = Only one person held the role for the entire fin
 uploadTemplateTable.title = Review the companies in your notification
 uploadTemplateTable.caption = Submit a notification
 uploadTemplateTable.heading = Review the companies in your notification
-uploadTemplateTable.paragraph1 = This list is taken from the notification details in the submission template you uploaded.
-uploadTemplateTable.paragraph2 = There were {0} companies {1} was responsible for during the financial year.
-uploadTemplateTable.paragraph3WithLink = If this is not correct, <a class="govuk-link" href="{0}">upload an updated submission template</a> before continuing.
+uploadTemplateTable.paragraph1 = This list is from your submission template. It shows {0} companies {1} was responsible for in the financial year.
+uploadTemplateTable.paragraph2WithLink = If any companies details are missing or incorrect, <a class="govuk-link" href="{0}">upload an updated submission template</a> before continuing.
 uploadTemplateTable.parsedData.empty = No parsed rows
 uploadTemplateTable.continue = Continue
 uploadTemplateTable.table.companyName = Company name
