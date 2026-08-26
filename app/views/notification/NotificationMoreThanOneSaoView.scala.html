@@ -27,7 +27,7 @@
 @(form: Form[?], mode: Mode)(using request: Request[?], messages: Messages)
 
 @layout(
-    pageTitle = title(form, messages("notificationMoreThanOneSao.title")),
+    pageTitle = title(form, messages("notificationMoreThanOneSao.title"), Some(messages("notificationMoreThanOneSao.section"))),
     backLink = Some(BackLinkViewModel(notificationRoutes.NotificationTaskListController.onPageLoad().url))
 ) {
 
@@ -44,7 +44,7 @@
             RadiosViewModel.yesNo(
                 field = form("value"),
                 legend = LegendViewModel(messages("notificationMoreThanOneSao.heading").toText).asPageHeading(LegendSize.Large),
-            ).withButtonHints(List(messages("notificationMoreThanOneSao.yes"), messages("notificationMoreThanOneSao.no")))
+            )
         )
 
         @govukButton(

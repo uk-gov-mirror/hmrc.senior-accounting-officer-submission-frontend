@@ -60,8 +60,8 @@ class NotificationMoreThanOneSaoViewSpec extends ViewSpecBase[NotificationMoreTh
           doc.createTestsWithRadioButtons(
             name = "value",
             radios = List(
-              radio(value = yesKey, label = yesLabel, hint = Some(yesHint)),
-              radio(value = noKey, label = noLabel, hint = Some(noHint))
+              radio(value = yesKey, label = yesLabel, hint = None),
+              radio(value = noKey, label = noLabel, hint = None)
             ),
             isChecked = None,
             hasError = false
@@ -93,10 +93,10 @@ class NotificationMoreThanOneSaoViewSpec extends ViewSpecBase[NotificationMoreTh
           doc.createTestsWithRadioButtons(
             name = "value",
             radios = List(
-              radio(value = yesKey, label = yesLabel, hint = Some(yesHint)),
-              radio(value = noKey, label = noLabel, hint = Some(noHint))
+              radio(value = yesKey, label = yesLabel, hint = None),
+              radio(value = noKey, label = noLabel, hint = None)
             ),
-            isChecked = Some(radio(value = yesKey, label = yesLabel, hint = Some(yesHint))),
+            isChecked = Some(radio(value = yesKey, label = yesLabel, hint = None)),
             hasError = false
           )
 
@@ -126,8 +126,8 @@ class NotificationMoreThanOneSaoViewSpec extends ViewSpecBase[NotificationMoreTh
           doc.createTestsWithRadioButtons(
             name = "value",
             radios = List(
-              radio(value = yesKey, label = yesLabel, hint = Some(yesHint)),
-              radio(value = noKey, label = noLabel, hint = Some(noHint))
+              radio(value = yesKey, label = yesLabel, hint = None),
+              radio(value = noKey, label = noLabel, hint = None)
             ),
             isChecked = None,
             hasError = true
@@ -152,8 +152,8 @@ class NotificationMoreThanOneSaoViewSpec extends ViewSpecBase[NotificationMoreTh
 }
 
 object NotificationMoreThanOneSaoViewSpec {
-  val pageHeading = "Was there more than one SAO during the financial year?"
-  val pageTitle   = "Submit a notification - Was there more than one SAO during the financial year?"
+  val pageHeading = "Did the SAO change during the financial year you are submitting for?"
+  val pageTitle   = "Did the SAO change during the financial year you are submitting for? - Submit a notification"
   val yesKey      = "true"
   val yesLabel    = "Yes"
   val noKey       = "false"
