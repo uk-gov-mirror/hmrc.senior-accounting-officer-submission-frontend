@@ -348,8 +348,8 @@ notificationMultiSaoLastOfficerName.error.required = Enter the name of the last 
 notificationMultiSaoLastOfficerName.error.length = The name you enter must be 254 characters or less
 notificationMultiSaoLastOfficerName.change.hidden = NotificationMultiSaoLastOfficerName
 
-notificationMultiSaoPreviousOfficerStartDate.title = Submit a notification
-notificationMultiSaoPreviousOfficerStartDate.heading = When did {0}’s responsibility as the SAO start?
+notificationMultiSaoPreviousOfficerStartDate.title = What date did the previous SAO responsibility start?
+notificationMultiSaoPreviousOfficerStartDate.heading = When did {0} become the SAO?
 notificationMultiSaoPreviousOfficerStartDate.caption = Submit a notification
 notificationMultiSaoPreviousOfficerStartDate.hint = For example 01 6 2024
 notificationMultiSaoPreviousOfficerStartDate.checkYourAnswersLabel = NotificationMultiSaoPreviousOfficerStartDate
