@@ -36,12 +36,11 @@
         }
 
         <span class="govuk-caption-l">@messages("notificationMultiSaoLastOfficerName.caption")</span>
-        <h1 class="govuk-heading-l">@messages("notificationMultiSaoLastOfficerName.heading")</h1>
 
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = Label()
+                label = LabelViewModel(messages("notificationMultiSaoLastOfficerName.heading").toText).asPageHeading(LabelSize.Large)
             )
             .withWidth(Fixed20)
         )
