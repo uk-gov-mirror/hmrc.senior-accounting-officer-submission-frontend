@@ -27,7 +27,7 @@
 @(form: Form[?], mode: Mode)(using request: Request[?], messages: Messages)
 
 @layout(
-    pageTitle = title(form, messages("notificationMoreThanOneSao.title"), Some(messages("section.notification"))),
+    pageTitle = title(form, messages("notificationMoreThanOneSao.title"), Some("section.notification")),
     backLink = Some(BackLinkViewModel(notificationRoutes.NotificationTaskListController.onPageLoad().url))
 ) {
 

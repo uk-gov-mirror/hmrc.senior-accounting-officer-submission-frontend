@@ -27,7 +27,7 @@
 
 @(notificationReference: String, displayPdfLink: Boolean)(using request: Request[?], messages: Messages)
 
-@layout(showBackLink = false, pageTitle = titleNoForm(messages("notificationConfirmation.title"), Some(messages("section.notification")))) {
+@layout(showBackLink = false, pageTitle = titleNoForm(messages("notificationConfirmation.title"), Some("section.notification"))) {
 
     <div class="govuk-panel govuk-panel--confirmation">
         <h1 class="govuk-panel__title">

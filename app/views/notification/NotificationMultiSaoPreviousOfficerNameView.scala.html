@@ -27,7 +27,7 @@
 
 @(saoName: String, form: Form[?], mode: Mode, saoIndex: Int)(using request: Request[?], messages: Messages)
 
-@layout(pageTitle = title(form, messages("notificationMultiSaoPreviousOfficerName.title"), Some(messages("section.notification")))) {
+@layout(pageTitle = title(form, messages("notificationMultiSaoPreviousOfficerName.title"), Some("section.notification"))) {
 
     @formHelper(action = notificationRoutes.NotificationMultiSaoPreviousOfficerNameController.onSubmit(mode, saoIndex)) {
 

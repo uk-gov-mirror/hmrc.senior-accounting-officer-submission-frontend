@@ -33,7 +33,7 @@
 
 @uploadUrl = @{notificationRoutes.NotificationUploadFormController.onPageLoad().url}
 
-@layout(pageTitle = titleNoForm(messages("uploadTemplateTable.title"), Some(messages("section.notification")))) {
+@layout(pageTitle = titleNoForm(messages("uploadTemplateTable.title"), Some("section.notification"))) {
     <span class="govuk-caption-m">@messages("uploadTemplateTable.caption")</span>
     <h1 class="govuk-heading-l">@messages("uploadTemplateTable.heading")</h1>
     <p class="govuk-body">@messages("uploadTemplateTable.paragraph1", tableData.rows.size.toString, saoName)</p>

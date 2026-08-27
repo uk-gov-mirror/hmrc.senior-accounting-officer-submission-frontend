@@ -26,7 +26,7 @@
 
 @(form: Form[?], mode: Mode, saoIndex: Int)(using request: Request[?], messages: Messages)
 
-@layout(pageTitle = title(form, messages("notificationMultiSaoAreAllAdded.title"), Some(messages("section.notification")))) {
+@layout(pageTitle = title(form, messages("notificationMultiSaoAreAllAdded.title"), Some("section.notification"))) {
 
     @formHelper(action = notificationRoutes.NotificationMultiSaoAreAllAddedController.onSubmit(mode, saoIndex), Symbol("autoComplete") -> "off") {
 
