@@ -33,7 +33,7 @@ class NotificationConfirmationViewSpec extends ViewSpecBase[NotificationConfirma
   "NotificationConfirmationView" - {
     "when displayPdfLink is true" - {
       val displayPdfLink = true
-      AppConfig.setValue("hub-frontend.host", hubUrl)
+      AppConfig.setValue("hub-frontend.host", accountHomepageLinkUrl)
       val doc: Document = generateView(displayPdfLink)
 
       doc.createTestsWithStandardPageElements(
@@ -82,21 +82,23 @@ class NotificationConfirmationViewSpec extends ViewSpecBase[NotificationConfirma
         .select("li span a")
         .get(0)
         .createTestWithLink(
-          linkText = pageDownload,
-          destinationUrl = pageDownloadUrl
+          linkText = downloadPdfLinkText,
+          destinationUrl = downloadPdfLinkUrl
         )
 
       doc.getMainContent
         .select("li span a")
         .get(1)
         .createTestWithLink(
-          linkText = pagePrint,
+          linkText = printPageLinkText,
           destinationUrl = "#"
         )
 
       doc.createTestsForSubHeadings(
         pageSubheadings
       )
+
+      doc.createTestForInsetText(pageInsetText)
 
       doc.createTestsWithOrWithoutError(hasError = false)
       doc.createTestsWithSubmissionButton(
@@ -107,7 +109,7 @@ class NotificationConfirmationViewSpec extends ViewSpecBase[NotificationConfirma
 
     "when displayPdfLink is false" - {
       val displayPdfLink = false
-      AppConfig.setValue("hub-frontend.host", hubUrl)
+      AppConfig.setValue("hub-frontend.host", accountHomepageLinkUrl)
       val doc: Document = generateView(displayPdfLink)
 
       doc.createTestsWithStandardPageElements(
@@ -151,13 +153,15 @@ class NotificationConfirmationViewSpec extends ViewSpecBase[NotificationConfirma
         .select("li span a")
         .get(0)
         .createTestWithLink(
-          linkText = pagePrint,
+          linkText = printPageLinkText,
           destinationUrl = "#"
         )
 
       doc.createTestsForSubHeadings(
         pageSubheadings
       )
+
+      doc.createTestForInsetText(pageInsetText)
 
       doc.createTestsWithOrWithoutError(hasError = false)
       doc.createTestsWithSubmissionButton(
@@ -186,30 +190,45 @@ class NotificationConfirmationViewSpec extends ViewSpecBase[NotificationConfirma
 
 object NotificationConfirmationViewSpec {
   val pageHeading                 = "Notification submitted"
-  val pageTitle                   = "Submit a notification - Notification submitted"
+  val pageTitle                   = "Notification submitted - Submit a notification"
   val pageParagraphs: Seq[String] = Seq(
-    "We’ve sent a confirmation email to all the contacts you gave during registration.",
+    "HMRC has received your notification. We’ve sent a confirmation email to all the contacts you provided during registration.",
     "To keep a record of your submission, you can:",
-    "Your notification has been received by HMRC. A member of compliance staff may contact you if they need more information.",
-    "You can now submit a Senior Accounting Officer certificate or another notification on behalf of another SAO in your group on your account homepage."
+    "Someone from HMRC may contact you if they need more information.",
+    "You can submit a certificate or another notification from your account homepage."
   )
-  val panelTitle                                  = "Notification submitted"
-  val testReferenceNumber                         = "SAONOT0123456789"
-  val panelBody: String                           = s"Your reference number $testReferenceNumber"
-  val testDate                                    = "17 January 2025 at 14:15am (GMT)"
+  val panelTitle          = "Notification submitted"
+  val testReferenceNumber = "SAONOT0123456789"
+  val panelBody: String   = s"Your reference number $testReferenceNumber"
+  val testDate            = "17 January 2025 at 14:15am (GMT)"
+
+  val downloadAPdfPageListItem =
+    "download a PDF to save a copy of all the answers. You may not be able to do this after you leave this page"
+  val printThisPagePageListItem =
+    "print this page to keep a paper copy of your confirmation"
+
   val pageListItemsWhenLinkDisplayed: Seq[String] =
     Seq(
-      "Download a PDF - save a copy of all the answers you submitted now. You may not be able to download a PDF if you leave this page",
-      "Print this page - print a paper copy of this confirmation page"
+      downloadAPdfPageListItem,
+      printThisPagePageListItem
     )
+
   val pageListItemsWhenLinkNotDisplayed: Seq[String] =
     Seq(
-      "Print this page - print a paper copy of this confirmation page"
+      printThisPagePageListItem
     )
-  val pageDownload            = "Download a PDF"
-  val pageDownloadUrl: String =
+
+  val downloadPdfLinkText        = "download a PDF"
+  val downloadPdfLinkUrl: String =
     s"/senior-accounting-officer/submission/notification/download?notificationReference=$testReferenceNumber"
-  val pagePrint                    = "Print this page"
+
+  val printPageLinkText = "print this page"
+
+  val accountHomepageLinkText = "account homepage"
+  val accountHomepageLinkUrl  = "testHubUrl"
+
   val pageSubheadings: Seq[String] = Seq("What happens next")
-  val hubUrl                       = "testHubUrl"
+
+  val pageInsetText =
+    "If you later realise the information is incorrect, contact your Customer Compliance Manager (CCM) if you have one, or email wmbc.saomailbox@hmrc.gov.uk for support."
 }

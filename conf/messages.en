@@ -147,18 +147,17 @@ submitNotification.paragraph2 = By sending the notification you agree that the i
 submitNotification.inset.text = If you later realise you’ve submitted incorrect information, contact your Customer Compliance Manager if you have one, or the Customer Engagement Team for support.
 submitNotification.button = Confirm and submit
 
-notificationConfirmation.title = Submit a notification - Notification submitted
+notificationConfirmation.title = Notification submitted
 notificationConfirmation.heading = Notification submitted
 notificationConfirmation.reference.text = Your reference number
-notificationConfirmation.paragraph1 = We’ve sent a confirmation email to all the contacts you gave during registration.
+notificationConfirmation.paragraph1 = HMRC has received your notification. We’ve sent a confirmation email to all the contacts you provided during registration.
 notificationConfirmation.paragraph2 = To keep a record of your submission, you can:
-notificationConfirmation.paragraph3 = Your notification has been received by HMRC. A member of compliance staff may contact you if they need more information.
-notificationConfirmation.paragraph4 = You can now submit a Senior Accounting Officer certificate or another notification on behalf of another SAO in your group on your account homepage.
-notificationConfirmation.downloadPdf = Download a PDF
-notificationConfirmation.printPage = Print this page
-notificationConfirmation.list1.item1 = - save a copy of all the answers you submitted now. You may not be able to download a PDF if you leave this page
-notificationConfirmation.list1.item2 = - print a paper copy of this confirmation page
+notificationConfirmation.paragraph3 = Someone from HMRC may contact you if they need more information.
+notificationConfirmation.paragraph4WithLink = You can submit a certificate or another notification from your <a href="{0}" class="govuk-link" id="account-homepage-link">account homepage</a>.
+notificationConfirmation.list1.item1WithLink = <a href="{0}" class="govuk-link" id="download-pdf-link">download a PDF</a> to save a copy of all the answers. You may not be able to do this after you leave this page
+notificationConfirmation.list1.item2WithLink = <a href="{0}" class="govuk-link" id="print-page-link">print this page</a> to keep a paper copy of your confirmation
 notificationConfirmation.subheading = What happens next
+notificationConfirmation.inset.text = If you later realise the information is incorrect, contact your Customer Compliance Manager (CCM) if you have one, or email wmbc.saomailbox@hmrc.gov.uk for support.
 
 submitCertificateStart.title = Submit a certificate
 submitCertificateStart.heading = Submit a certificate
@@ -342,11 +341,9 @@ notificationMultiSaoLastOfficerStartDate.error.required = The date must include 
 notificationMultiSaoLastOfficerStartDate.error.invalid = Enter the date in the correct format
 notificationMultiSaoLastOfficerStartDate.change.hidden = NotificationMultiSaoLastOfficerStartDate
 
-notificationMultiSaoLastOfficerName.title = Submit a notification - SAO full name
+notificationMultiSaoLastOfficerName.title = What is the name of the SAO at the end of the financial year?
 notificationMultiSaoLastOfficerName.caption = Submit a notification
-notificationMultiSaoLastOfficerName.heading = Senior Accounting Officer details
-notificationMultiSaoLastOfficerName.label = What is the name of the last SAO?
-notificationMultiSaoLastOfficerName.paragraph1 = You told us more than one SAO held the role during the financial year. Enter the name of the last person who held the role. We’ll then ask you for details of the others who held the role earlier in the year.
+notificationMultiSaoLastOfficerName.heading = What is the name of the SAO at the end of the financial year?
 notificationMultiSaoLastOfficerName.checkYourAnswersLabel = notificationMultiSaoLastOfficerName
 notificationMultiSaoLastOfficerName.error.required = Enter the name of the last SAO
 notificationMultiSaoLastOfficerName.error.length = The name you enter must be 254 characters or less

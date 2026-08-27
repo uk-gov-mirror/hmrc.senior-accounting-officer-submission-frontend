@@ -27,7 +27,7 @@
 
 @(notificationReference: String, displayPdfLink: Boolean)(using request: Request[?], messages: Messages)
 
-@layout(showBackLink = false, pageTitle = titleNoForm(messages("notificationConfirmation.title"))) {
+@layout(showBackLink = false, pageTitle = titleNoForm(messages("notificationConfirmation.title"), Some(messages("section.notification")))) {
 
     <div class="govuk-panel govuk-panel--confirmation">
         <h1 class="govuk-panel__title">
@@ -47,19 +47,20 @@
         @if(displayPdfLink) {
             <li>
                 <span>
-                    <a class="govuk-link" id="download-pdf-link" href="@controllers.routes.DownloadPdfController.notification(notificationReference)">
-                        @messages("notificationConfirmation.downloadPdf")
-                    </a>
-                    @messages("notificationConfirmation.list1.item1")
+                    @Html(
+                        messages(
+                            "notificationConfirmation.list1.item1WithLink",
+                            controllers.routes.DownloadPdfController.notification(notificationReference)
+                        )
+                    )
                 </span>
             </li>
         }
         <li>
             <span>
-                <a class="govuk-link" id="print-page-link" href="#">
-                    @messages("notificationConfirmation.printPage")
-                </a>
-                @messages("notificationConfirmation.list1.item2")
+                @Html(
+                    messages("notificationConfirmation.list1.item2WithLink", "#")
+                )
             </span>
         </li>
     </ul>
@@ -73,7 +74,12 @@
 
     <h2 class="govuk-heading-m">@messages("notificationConfirmation.subheading")</h2>
     <p class="govuk-body">@messages("notificationConfirmation.paragraph3")</p>
-    <p class="govuk-body">@messages("notificationConfirmation.paragraph4")</p>
+    <p class="govuk-body">@Html(messages("notificationConfirmation.paragraph4WithLink", appConfig.hubBaseUrl))</p>
+
+    <div class="govuk-inset-text">
+        @messages("notificationConfirmation.inset.text")
+    </div>
+
 
     @formHelper(action = notificationRoutes.NotificationConfirmationController.onSubmit()) {
         @govukButton(
@@ -82,8 +88,3 @@
     }
 }
 
-@accountHomepageLinkAttributes = @{
-    s"""href="${appConfig.hubBaseUrl}" class="govuk-link""""
-}
-
-    
