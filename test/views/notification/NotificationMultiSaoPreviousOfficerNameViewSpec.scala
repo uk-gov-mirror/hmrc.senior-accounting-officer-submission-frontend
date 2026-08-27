@@ -57,7 +57,7 @@ class NotificationMultiSaoPreviousOfficerNameViewSpec
             name = "value",
             label = pageHeading,
             value = "",
-            hint = Some(pageHint),
+            hint = None,
             hasError = false
           )
           doc.createTestsWithLargeCaption(pageCaption)
@@ -88,7 +88,7 @@ class NotificationMultiSaoPreviousOfficerNameViewSpec
             name = "value",
             label = pageHeading,
             value = testInputValue,
-            hint = Some(pageHint),
+            hint = None,
             hasError = false
           )
 
@@ -119,7 +119,7 @@ class NotificationMultiSaoPreviousOfficerNameViewSpec
             name = "value",
             label = pageHeading,
             value = "",
-            hint = Some(pageHint),
+            hint = None,
             hasError = true
           )
 
@@ -141,8 +141,7 @@ class NotificationMultiSaoPreviousOfficerNameViewSpec
 object NotificationMultiSaoPreviousOfficerNameViewSpec {
   val pageHeading    = "Who was the SAO before Firstname Lastname?"
   val pageCaption    = "Submit a notification"
-  val pageHint       = "This is the person who held the role before Firstname Lastname"
-  val pageTitle      = "Senior Accounting Officer full name"
+  val pageTitle      = "Who was the SAO before the last SAO? - Submit a notification"
   val testInputValue = "test name"
   val saoName        = "Firstname Lastname"
   val saoIndex       = 3

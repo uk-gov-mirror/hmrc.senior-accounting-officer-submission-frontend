@@ -321,10 +321,9 @@ notificationSingleSaoOfficerName.error.required = Enter the name of the SAO
 notificationSingleSaoOfficerName.error.length = The name you enter must be 254 characters or less
 notificationSingleSaoOfficerName.change.hidden = the senior accounting officer full name
 
-notificationMultiSaoPreviousOfficerName.title = Senior Accounting Officer full name
+notificationMultiSaoPreviousOfficerName.title = Who was the SAO before the last SAO?
 notificationMultiSaoPreviousOfficerName.heading = Who was the SAO before {0}?
 notificationMultiSaoPreviousOfficerName.caption = Submit a notification
-notificationMultiSaoPreviousOfficerName.hint = This is the person who held the role before {0}
 notificationMultiSaoPreviousOfficerName.checkYourAnswersLabel = notificationMultiSaoPreviousOfficerName
 notificationMultiSaoPreviousOfficerName.error.required = Enter the name of the previous SAO
 notificationMultiSaoPreviousOfficerName.error.length = The name you enter must be 254 characters or less

@@ -27,7 +27,7 @@
 
 @(saoName: String, form: Form[?], mode: Mode, saoIndex: Int)(using request: Request[?], messages: Messages)
 
-@layout(pageTitle = title(form, messages("notificationMultiSaoPreviousOfficerName.title"))) {
+@layout(pageTitle = title(form, messages("notificationMultiSaoPreviousOfficerName.title"), Some(messages("section.notification")))) {
 
     @formHelper(action = notificationRoutes.NotificationMultiSaoPreviousOfficerNameController.onSubmit(mode, saoIndex)) {
 
@@ -43,7 +43,6 @@
                 label = LabelViewModel(messages("notificationMultiSaoPreviousOfficerName.heading", saoName).toText).asPageHeading(LabelSize.Large),
             )
             .withWidth(Fixed20)
-            .withHint(Hint(content = Text(messages("notificationMultiSaoPreviousOfficerName.hint", saoName))))
         )
 
         @govukButton(
