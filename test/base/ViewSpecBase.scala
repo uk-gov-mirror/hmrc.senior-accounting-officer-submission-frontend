@@ -469,6 +469,70 @@ class ViewSpecBase[T <: BaseScalaTemplate[HtmlFormat.Appendable, Format[HtmlForm
       )
     }
 
+    def createTestMustShowTextInputWithNoLabel(
+        name: String,
+        value: String,
+        hasError: Boolean
+    )(using pos: Position): Unit = {
+
+      s"for input '$name'" - {
+
+        def inputElements = target.resolve.select(s"input[name=$name].govuk-input")
+
+        s"input with name '$name' must exist on the page" in {
+          withClue(s"input with the name '$name' not found\n'") {
+            inputElements.size mustBe 1
+          }
+        }
+
+        def inputElement = inputElements.get(0)
+
+        s"input with name '$name' must have value of '$value'" in {
+          withClue(s"input with name '$name' does not have a value attribute '$value'\n") {
+            inputElement.attr("value") mustEqual value
+          }
+        }
+
+        if hasError then {
+          s"input with name '$name' must show an associated error message when field has error" in {
+            val errorMessageSelector = inputElement
+              .attr("aria-describedby")
+              .split(" ")
+              .filter(_.nonEmpty)
+              .map("#" + _ + ".govuk-error-message")
+              .mkString(",")
+
+            val errorMessageElements = target.resolve.safeSelect(errorMessageSelector)
+
+            withClue(s"input does not have expected error message with id '$name'\n") {
+              errorMessageElements.size mustBe 1
+            }
+          }
+        } else {
+          s"input with name '$name' must not show an associated error message when field has no error" in {
+            val errorMessageElements = target.resolve.select(".govuk-error-message")
+
+            withClue(s"input has unexpected error message with id '$name'\n") {
+              errorMessageElements.size mustBe 0
+            }
+          }
+        }
+      }
+    }
+
+    def createTestsWithASingleTextInputWithNoLabel(
+        name: String,
+        value: String,
+        hasError: Boolean
+    )(using pos: Position): Unit = {
+      createTestMustShowNumberOfInputs(1)
+      createTestMustShowTextInputWithNoLabel(
+        name = name,
+        value = value,
+        hasError = hasError
+      )
+    }
+
     def createTestMustShowHint(expectedHint: String)(using pos: Position): Unit = {
       s"must have a hint with values '$expectedHint'" in {
         val hintElement = target.resolve.getElementsByClass("govuk-hint").asScala.headOption

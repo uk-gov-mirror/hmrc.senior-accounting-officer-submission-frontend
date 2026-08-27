@@ -27,7 +27,7 @@
 
 @(form: Form[?], mode: Mode)(using request: Request[?], messages: Messages)
 
-@layout(pageTitle = title(form, messages("notificationMultiSaoLastOfficerName.title"))) {
+@layout(pageTitle = title(form, messages("notificationMultiSaoLastOfficerName.title"), Some(messages("section.notification")))) {
 
     @formHelper(action = notificationRoutes.NotificationMultiSaoLastOfficerNameController.onSubmit(mode)) {
 
@@ -38,12 +38,10 @@
         <span class="govuk-caption-l">@messages("notificationMultiSaoLastOfficerName.caption")</span>
         <h1 class="govuk-heading-l">@messages("notificationMultiSaoLastOfficerName.heading")</h1>
 
-        <p class="govuk-body">@messages("notificationMultiSaoLastOfficerName.paragraph1")</p>
-
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("notificationMultiSaoLastOfficerName.label").toText).withCssClass("govuk-label--m")
+                label = Label()
             )
             .withWidth(Fixed20)
         )
