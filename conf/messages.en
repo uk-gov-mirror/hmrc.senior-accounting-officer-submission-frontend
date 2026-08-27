@@ -245,7 +245,6 @@ notificationUploadError.validation.invalidEnumValue = A value in the uploaded te
 notificationUploadError.validation.invalidCertificateType = Certificate type must be Qualified, Unqualified or blank
 
 notificationMoreThanOneSao.title = Did the SAO change during the financial year you are submitting for?
-notificationMoreThanOneSao.section = Submit a notification
 notificationMoreThanOneSao.heading = Did the SAO change during the financial year you are submitting for?
 notificationMoreThanOneSao.checkYourAnswersLabel = notificationMoreThanOneSao
 notificationMoreThanOneSao.error.required = Select ‘Yes’ if there was more than one SAO because the SAO changed during the financial year
@@ -313,7 +312,6 @@ uploadTemplateCsvParser.error.qualificationStatement.tooLong = The explanation y
 uploadTemplateCsvParser.error.qualificationStatement.prohibited = Leave the explanation cell blank. Only companies with a qualified certificate can provide an explanation
 
 notificationSingleSaoOfficerName.title = What is the name of the SAO?
-notificationSingleSaoOfficerName.section = Submit a notification
 notificationSingleSaoOfficerName.heading = What is the name of the SAO?
 notificationSingleSaoOfficerName.caption = Submit a notification
 notificationSingleSaoOfficerName.checkYourAnswersLabel = Senior Accounting Officer
