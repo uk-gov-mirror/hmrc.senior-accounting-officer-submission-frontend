@@ -252,7 +252,7 @@ class NotificationCheckYourAnswersViewSpec extends ViewSpecBase[NotificationChec
 
 object NotificationCheckYourAnswersViewSpec {
   val pageHeading              = "Check your answers"
-  val pageTitle                = "Check your answers"
+  val pageTitle                = "Check your answers - Submit a notification"
   val pageCaption              = "Submit a notification"
   val pageButtonText           = "Confirm and submit"
   val testFinancialYearEndDate = "'Dummy Date'"

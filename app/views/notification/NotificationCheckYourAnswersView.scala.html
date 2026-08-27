@@ -25,7 +25,7 @@
 
 @(summaryList: SummaryList, financialYearEndDate: String)(using request: Request[?], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("notificationCheckYourAnswers.title"))) {
+@layout(pageTitle = titleNoForm(messages("notificationCheckYourAnswers.title"), Some("section.notification"))) {
     <span class="govuk-caption-l">@messages("notificationCheckYourAnswers.caption")</span>
     <h1 class="govuk-heading-l">@messages("notificationCheckYourAnswers.heading")</h1>
 
