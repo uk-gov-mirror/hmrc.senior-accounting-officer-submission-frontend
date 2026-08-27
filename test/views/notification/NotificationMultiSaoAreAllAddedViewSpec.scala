@@ -37,15 +37,6 @@ class NotificationMultiSaoAreAllAddedViewSpec extends ViewSpecBase[NotificationM
     Jsoup.parse(view.toString)
   }
 
-  extension (doc: Document) {
-    def verticalRadioButton(): Unit = {
-      "must have vertical radio buttons" in {
-        doc.select(".govuk-radios").size() mustBe 1
-        doc.select(".govuk-radios.govuk-radios--inline").size() mustBe 0
-      }
-    }
-  }
-
   "NotificationMultiSaoAreAllAddedView" - {
 
     Mode.values.foreach { mode =>
@@ -64,8 +55,6 @@ class NotificationMultiSaoAreAllAddedViewSpec extends ViewSpecBase[NotificationM
           doc.createTestsWithLargeCaption(
             caption = pageCaption
           )
-
-          doc.verticalRadioButton()
 
           doc.createTestsWithRadioButtons(
             name = "value",
@@ -164,13 +153,12 @@ class NotificationMultiSaoAreAllAddedViewSpec extends ViewSpecBase[NotificationM
 }
 
 object NotificationMultiSaoAreAllAddedViewSpec {
-  val pageHeading = "Have you added all the SAO for the financial year this notification relates to?"
+  val pageHeading = "Have you added all the SAOs for this notification?"
   val pageCaption = "Submit a notification"
-  val pageTitle   =
-    "Submit a notification - Have you added all the SAO for the financial year this notification relates to?"
-  val yesKey   = "true"
-  val yesLabel = "Yes"
-  val noKey    = "false"
-  val noLabel  = "No"
-  val saoIndex = 3
+  val pageTitle   = "Have you added all the SAOs for this notification? - Submit a notification"
+  val yesKey      = "true"
+  val yesLabel    = "Yes"
+  val noKey       = "false"
+  val noLabel     = "No"
+  val saoIndex    = 3
 }

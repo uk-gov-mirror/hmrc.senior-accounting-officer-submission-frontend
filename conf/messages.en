@@ -359,8 +359,8 @@ notificationMultiSaoPreviousOfficerStartDate.error.required = The date must incl
 notificationMultiSaoPreviousOfficerStartDate.error.invalid = Enter the date in the correct format
 notificationMultiSaoPreviousOfficerStartDate.change.hidden = NotificationMultiSaoPreviousOfficerStartDate
 
-notificationMultiSaoAreAllAdded.title = Submit a notification - Have you added all the SAO for the financial year this notification relates to?
-notificationMultiSaoAreAllAdded.heading = Have you added all the SAO for the financial year this notification relates to?
+notificationMultiSaoAreAllAdded.title = Have you added all the SAOs for this notification?
+notificationMultiSaoAreAllAdded.heading = Have you added all the SAOs for this notification?
 notificationMultiSaoAreAllAdded.caption = Submit a notification
 notificationMultiSaoAreAllAdded.checkYourAnswersLabel = notificationMultiSaoAreAllAdded
 notificationMultiSaoAreAllAdded.error.required = Select ’Yes’ if you have added all the Senior Accounting Officers for the financial year this notification relates to
