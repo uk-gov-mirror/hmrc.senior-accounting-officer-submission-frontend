@@ -131,7 +131,7 @@ class NotificationMultiSaoLastOfficerStartDateViewSpec
 
 object NotificationMultiSaoLastOfficerStartDateViewSpec {
   val pageHeading = "What date did Firstname Lastname become the SAO?"
-  val pageTitle   = "Submit a notification"
+  val pageTitle   = "What date did the last SAO become the SAO? - Submit a notification"
   val pageCaption = "Submit a notification"
   val pageHint    = "For example 01 6 2024"
 }
