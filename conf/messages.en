@@ -366,7 +366,7 @@ notificationMultiSaoAreAllAdded.checkYourAnswersLabel = notificationMultiSaoAreA
 notificationMultiSaoAreAllAdded.error.required = Select ’Yes’ if you have added all the Senior Accounting Officers for the financial year this notification relates to
 notificationMultiSaoAreAllAdded.change.hidden = NotificationMultiSaoAreAllAdded
 
-notificationMultiSaoPreviousOfficerEndDate.title = Submit a notification
+notificationMultiSaoPreviousOfficerEndDate.title = What date did the previous SAO responsibility stop?
 notificationMultiSaoPreviousOfficerEndDate.caption = Submit a notification
 notificationMultiSaoPreviousOfficerEndDate.heading = When did {0} stop being the SAO?
 notificationMultiSaoPreviousOfficerEndDate.hint = For example 01 6 2024

@@ -135,7 +135,7 @@ class NotificationMultiSaoPreviousOfficerEndDateViewSpec
 
 object NotificationMultiSaoPreviousOfficerEndDateViewSpec {
   val pageHeading = "When did Firstname Lastname stop being the SAO?"
-  val pageTitle   = "Submit a notification"
+  val pageTitle   = "What date did the previous SAO responsibility stop? - Submit a notification"
   val saoIndex    = 3
   val saoName     = "Firstname Lastname"
   val pageCaption = "Submit a notification"
