@@ -82,5 +82,4 @@ class NotificationNavigator @Inject() () extends Navigator {
       _ => notificationRoutes.NotificationCheckYourAnswersController.onPageLoad()
     case _ => _ => ???
   }
-
 }

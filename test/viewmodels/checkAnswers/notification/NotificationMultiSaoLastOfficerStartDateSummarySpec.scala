@@ -25,6 +25,8 @@ import play.api.i18n.{Messages, MessagesApi}
 import uk.gov.hmrc.govukfrontend.views.Implicits.RichString
 
 import java.time.LocalDate
+import viewmodels.checkAnswers.notification.NotificationMultiSaoLastOfficerStartDateSummarySpec.*
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 class NotificationMultiSaoLastOfficerStartDateSummarySpec extends SpecBase with GuiceOneAppPerSuite {
   given Messages = app.injector.instanceOf[MessagesApi].preferred(Seq.empty)
@@ -47,12 +49,14 @@ class NotificationMultiSaoLastOfficerStartDateSummarySpec extends SpecBase with 
         NotificationMultiSaoLastOfficerStartDateSummary.row(testUserAnswers(answer)).get
 
       "must have expected key" in {
-        SUT().key mustBe "NotificationMultiSaoLastOfficerStartDate".toKey
+        SUT().key mustBe keyText.toKey
       }
 
       "expected value" - {
         "must show '1 January 2000' when user answers is 1st Jan 2000" in {
-          SUT(answer = LocalDate.of(2000, 1, 1)).value.content mustBe "1 January 2000".toText
+          SUT(answer = LocalDate.of(2000, 1, 1)).value.content mustBe HtmlContent(
+            s"""<span data-test-id="final-sao-start-date">$expectedDate</span>"""
+          )
         }
       }
 
@@ -87,4 +91,9 @@ class NotificationMultiSaoLastOfficerStartDateSummarySpec extends SpecBase with 
     }
   }
 
+}
+
+object NotificationMultiSaoLastOfficerStartDateSummarySpec {
+  val keyText      = "Start date"
+  val expectedDate = "1 January 2000"
 }

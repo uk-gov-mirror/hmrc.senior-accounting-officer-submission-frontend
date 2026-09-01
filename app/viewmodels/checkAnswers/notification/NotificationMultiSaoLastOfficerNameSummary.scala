@@ -23,6 +23,8 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.converters.*
 import viewmodels.govuk.summarylist.*
+import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 object NotificationMultiSaoLastOfficerNameSummary {
 
@@ -30,7 +32,11 @@ object NotificationMultiSaoLastOfficerNameSummary {
     answers.get(NotificationMultiSaoLastOfficerNamePage).map { answer =>
       SummaryListRowViewModel(
         key = messages("notificationMultiSaoLastOfficerName.checkYourAnswersLabel").toKey,
-        value = ValueViewModel(answer.toText),
+        value = ValueViewModel(
+          HtmlContent(
+            s"""<span data-test-id="final-sao-name">${HtmlFormat.escape(answer)}</span>"""
+          )
+        ),
         actions = Seq(
           ActionItemViewModel(
             messages("site.change").toText,

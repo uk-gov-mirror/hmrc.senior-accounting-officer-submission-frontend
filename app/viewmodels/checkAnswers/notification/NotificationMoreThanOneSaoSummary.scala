@@ -23,6 +23,7 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.converters.*
 import viewmodels.govuk.summarylist.*
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 object NotificationMoreThanOneSaoSummary {
 
@@ -32,7 +33,11 @@ object NotificationMoreThanOneSaoSummary {
 
       SummaryListRowViewModel(
         key = messages("notificationMoreThanOneSao.checkYourAnswersLabel").toKey,
-        value = ValueViewModel(messages(value).toText),
+        value = ValueViewModel(
+          HtmlContent(
+            s"""<span data-test-id="sao-change-value">${messages(value)}</span>"""
+          )
+        ),
         actions = Seq(
           ActionItemViewModel(
             messages("site.change").toText,
