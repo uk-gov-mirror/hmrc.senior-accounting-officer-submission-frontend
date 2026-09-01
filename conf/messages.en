@@ -59,48 +59,54 @@ notificationTaskList.row.status.cannotStartYet = Cannot start yet
 notificationTaskList.row.status.completed = Completed
 notificationTaskList.row.status.notStarted = Not started
 
-template.guidance.title = Notification and certificate submission template guidance
-template.guidance.heading = Submission template guidance
+template.guidance.title = Submission template guidance
+template.guidance.heading = How to complete and submit your submission template
 
-template.guidance.paragraph1 = This is a step by step guide on how to submit a notification and certificate using the submission template.
+template.guidance.paragraph1 = Follow these steps to download a template, complete and submit your notification and certificate.
 
 template.guidance.subheading1 = Step 1: Download and complete a submission template
-template.guidance.subheading1.downloadTemplateLinkText = Download the submission template.
-template.guidance.subheading1.paragraph1 = Fill in all required fields for each company in your group. Each row should represent one company the SAO was responsible for in the previous financial year.
-template.guidance.subheading1.paragraph2 = Do not change the layout or structure of the template, if you do, the upload will fail.
-template.guidance.subheading1.paragraph3 = Use the guidance in row 3 under each column heading to help you enter the information correctly.
+template.guidance.subheading1.downloadTemplateLinkText = Download a submission template
+template.guidance.subheading1.paragraph1 = Complete all fields for each company in your group. Each row should represent one company your SAO was responsible for in the financial year.
+template.guidance.subheading1.paragraph2 = Do not change the layout or structure of the template. If you do, the upload will fail. Rows 1 to 9 of the template have guidance to help you complete each column.
+template.guidance.subheading1.paragraph3 = You''ll need to enter:
+template.guidance.subheading1.list.bullet1 = company name
+template.guidance.subheading1.list.bullet2 = Company Registration Number (CRN)
+template.guidance.subheading1.list.bullet3 = Unique Taxpayer Reference (UTR)
+template.guidance.subheading1.list.bullet4 = financial year end
+template.guidance.subheading1.list.bullet5 = organisation type
+template.guidance.subheading1.list.bullet6 = company status
+template.guidance.subheading1.list.bullet7 = certificate type
+template.guidance.subheading1.list.bullet8 = an explanation of a qualified certificate and the tax regimes it relates to
+
+template.guidance.subheading1.smallerSubheading = Qualified certificate: what to include in your explanation
+template.guidance.subheading1.smallerSubheading.paragraph1 = If you have a qualified certificate, you must explain why in the template. Your explanation should include:
+template.guidance.subheading1.smallerSubheading.bullet1 = what went wrong with the tax accounting arrangements
+template.guidance.subheading1.smallerSubheading.bullet2 = the reason the SAO decided to provide a qualified certificate
+template.guidance.subheading1.smallerSubheading.bullet3 = what led to the errors, not just a list
+template.guidance.subheading1.smallerSubheading.paragraph2 = You can also include any plans to address the issues, this is optional.
+template.guidance.subheading1.smallerSubheading.inset = When you make a submission for more than one SAO, you must complete a separate template for each one.
 
 template.guidance.subheading2 = Step 2: Upload your template
-template.guidance.subheading2.paragraph1 = When you’ve completed your template:
-template.guidance.subheading2.list1.item1 = Save it as a CSV (comma delimited) file.
-template.guidance.subheading2.list1.item2 = Upload it to the service.
-template.guidance.subheading2.list1.item3 = Check that all details are correct.
-template.guidance.subheading2.list1.item4 = Submit the file to complete your notification and certificate.
-template.guidance.subheading2.inset.text = If you only completed the notification section, you’ll need to re-upload the same template later when you’re ready to complete your certificate.
+template.guidance.subheading2.paragraph1 = You must complete the correct sections before uploading. The information we process from your template depends on which submission type you choose.
+template.guidance.subheading2.paragraph2 = If you choose to submit:
+template.guidance.subheading2.list1.bullet1 = a notification only, we will process the notification details
+template.guidance.subheading2.list1.bullet2 = a certificate only, we will process both sections – the certificate needs your company details from the notification section to be complete
+template.guidance.subheading2.list1.bullet3 = a notification and a certificate together, we will process both sections
+template.guidance.subheading2.paragraph3 = When you’ve completed your template, follow these steps.
+template.guidance.subheading2.list2.item1 = Save it as a CSV (comma delimited) (*.csv) file
+template.guidance.subheading2.list2.item2 = Upload the file to start your submission
+template.guidance.subheading2.paragraph4 = If you submit a notification now and want to add your certificate later, complete all columns and upload the template again when you are ready.
 
 template.guidance.subheading3 = Step 3: Check the information is correct
-template.guidance.subheading3.paragraph1 = Before you submit your certificate, you can check the information you uploaded is correct.
-template.guidance.subheading3.paragraph2WithLink = If the information is not correct, <a class="govuk-link" href="{0}">upload an updated submission template</a> before continuing.
-template.guidance.subheading3.paragraph3 = If there are any errors when you try to upload the template (for example, missing or invalid data), you’ll be shown a list of what to fix.
-template.guidance.subheading3.paragraph4 = You can:
-template.guidance.subheading3.list1.item1 = correct the errors in your Excel file
-template.guidance.subheading3.list1.item2 = save again as a CSV
-template.guidance.subheading3.list1.item3 = upload the file again
-template.guidance.subheading3.paragraph5 = Guidance is also included in the template to help you complete each field correctly.
-template.guidance.subheading3.paragraph6 = Keep a copy of your uploaded CSV files for your records.
+template.guidance.subheading3.paragraph1 = If the template you uploaded has errors, you will be shown what to fix. Open your Excel file and correct the errors. Then save it again as a CSV (comma delimited) (*.csv) file and upload it again.
+template.guidance.subheading3.paragraph2 = If there are no errors, you will see a summary of your information to review before you continue.
+template.guidance.subheading3.paragraph2 = If there are no errors, you will see a summary of your information to review before you continue.
 
-template.guidance.subheading4 = Step 4: Make your submission
-template.guidance.subheading4.paragraph1 = When you upload your completed template:
+template.guidance.subheading4 = Step 4: Complete your submission
+template.guidance.subheading4.paragraph1 = Complete the remaining steps in the service. Your template will only be sent to HMRC once you have reviewed your answers and selected ''Confirm and submit''.
 template.guidance.subheading4.list1.item1 = notification details will be used to complete your notification
 template.guidance.subheading4.list1.item2 = certificate details will be used to complete your certificate
-
-template.guidance.subheading5 = Complete both notification and certificate at the same time
-template.guidance.subheading5.list1.item1 = Start your submission by uploading the template and submitting your notification.
-template.guidance.subheading5.list1.item2 = After notification is submitted, complete the certificate journey to finish your submission.
-
-template.guidance.subheading6 = Complete certificate at a different time.
-template.guidance.subheading6.list1.item1 = Upload your template again with certificate information filled out.
-template.guidance.subheading6.list1.item2 = Complete the certificate journey and sign the declaration.
+template.guidance.submissionBtn = Make a submission
 
 notificationUploadForm.title = Upload a submission template for your notification
 notificationUploadForm.heading = Upload a submission template

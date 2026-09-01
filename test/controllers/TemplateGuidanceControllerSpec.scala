@@ -25,7 +25,7 @@ class TemplateGuidanceControllerSpec extends SpecBase {
 
   "TemplateGuidance Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET /template-guidance" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
@@ -40,5 +40,22 @@ class TemplateGuidanceControllerSpec extends SpecBase {
         contentAsString(result) mustEqual view()(using request, messages(application)).toString
       }
     }
+
+    "must return OK and the correct view for a GET /template-guidance/new-tab" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, routes.TemplateGuidanceController.onPageLoadNewTab().url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[TemplateGuidanceView]
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(true)(using request, messages(application)).toString
+      }
+    }
+
   }
 }

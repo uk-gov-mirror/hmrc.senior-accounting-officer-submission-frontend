@@ -66,7 +66,7 @@ class NotificationUploadFormViewSpec extends ViewSpecBase[NotificationUploadForm
         .getElementById("template-guidance")
         .createTestWithLink(
           "Read guidance on how to complete the submission template (opens in new tab)",
-          routes.TemplateGuidanceController.onPageLoad().url
+          routes.TemplateGuidanceController.onPageLoadNewTab().url
         )
 
       doc.createTestForInsetText(insetText)
@@ -118,7 +118,7 @@ class NotificationUploadFormViewSpec extends ViewSpecBase[NotificationUploadForm
         .getElementById("template-guidance")
         .createTestWithLink(
           "Read guidance on how to complete the submission template (opens in new tab)",
-          routes.TemplateGuidanceController.onPageLoad().url
+          routes.TemplateGuidanceController.onPageLoadNewTab().url
         )
 
       doc.createTestForInsetText(insetText)

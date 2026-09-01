@@ -8,6 +8,7 @@ GET         /refresh-session                                                    
 GET         /there-is-a-problem                                                       controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
 GET         /template-guidance                                                        controllers.TemplateGuidanceController.onPageLoad()
+GET         /template-guidance/new-tab                                               controllers.TemplateGuidanceController.onPageLoadNewTab()
 
 GET         /notification/template/download                                           controllers.DownloadTemplateController.downloadFile()
 
