@@ -68,7 +68,7 @@ class CertificateUploadFormViewSpec extends ViewSpecBase[CertificateUploadFormVi
         .getElementById("template-guidance")
         .createTestWithLink(
           "Read guidance on how to complete the submission template (opens in new tab)",
-          routes.TemplateGuidanceController.onPageLoad().url
+          routes.TemplateGuidanceController.onPageLoadNewTab().url
         )
 
       doc.createTestForInsetText(insetText)
@@ -118,7 +118,7 @@ class CertificateUploadFormViewSpec extends ViewSpecBase[CertificateUploadFormVi
         .getElementById("template-guidance")
         .createTestWithLink(
           "Read guidance on how to complete the submission template (opens in new tab)",
-          routes.TemplateGuidanceController.onPageLoad().url
+          routes.TemplateGuidanceController.onPageLoadNewTab().url
         )
 
       doc.createTestForInsetText(insetText)
