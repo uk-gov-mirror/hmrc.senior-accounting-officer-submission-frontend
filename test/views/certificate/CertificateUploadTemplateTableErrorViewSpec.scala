@@ -97,7 +97,7 @@ class CertificateUploadTemplateTableErrorViewSpec extends ViewSpecBase[Certifica
           "Enter a company UTR. It must be 10 digits long"
         )
         doc.select("tbody.govuk-table__body").text() must include(
-          "Enter a CRN. It must be 8 characters long"
+          "Enter a CRN that is 8 characters long. These can be either 8 digits, or 2 letters followed by 6 digits."
         )
       }
 

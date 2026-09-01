@@ -135,10 +135,12 @@ object CompanyUtr {
 final case class CompanyCrn(value: String)
 
 object CompanyCrn {
-  private val CompanyCrnRegex = "^[A-Za-z0-9]{8}$".r
+  private val CompanyCrnRegex = "^([0-9]{8}|[A-Z]{2}[0-9]{6})$".r
 
-  def fromString(value: String): Option[CompanyCrn] =
-    Option.when(CompanyCrnRegex.matches(value.trim))(CompanyCrn(value.trim))
+  def fromString(value: String): Option[CompanyCrn] = {
+    val sanitisedValue = value.trim.toUpperCase
+    Option.when(CompanyCrnRegex.matches(sanitisedValue))(CompanyCrn(sanitisedValue))
+  }
 
   given Format[CompanyCrn] = Format(
     Reads {

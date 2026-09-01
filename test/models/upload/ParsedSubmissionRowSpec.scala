@@ -21,6 +21,7 @@ import models.QualifiedCompany
 import models.UnqualifiedCompany
 import models.upload.ParsedSubmissionRowSpec.*
 import play.api.libs.json.{JsError, JsString, Json}
+import utils.TestDataGenerator.*
 
 import java.time.LocalDate
 
@@ -33,8 +34,8 @@ class ParsedSubmissionRowSpec extends SpecBase {
       val row = ParsedSubmissionRow(
         notification = NotificationFields(
           companyName = "Acme Ltd",
-          companyUtr = CompanyUtr("0123456789"),
-          companyCrn = Some(CompanyCrn("A1B2C3D4")),
+          companyUtr = CompanyUtr(generateUtr),
+          companyCrn = Some(CompanyCrn(generateCrn)),
           companyType = CompanyType.LTD,
           companyStatus = CompanyStatus.Active,
           financialYearEndDate = LocalDate.of(2025, 12, 31)
@@ -72,13 +73,20 @@ class ParsedSubmissionRowSpec extends SpecBase {
   "value parsers" - {
 
     "must parse and trim CompanyUtr and CompanyCrn values" in {
-      CompanyUtr.fromString(" 0123456789 ").value mustBe CompanyUtr("0123456789")
-      CompanyCrn.fromString(" A1B2C3D4 ").value mustBe CompanyCrn("A1B2C3D4")
+      val utr = generateUtr
+      val crn = generateCrn
+      CompanyUtr.fromString(s" $utr ").value mustBe CompanyUtr(utr)
+      CompanyCrn.fromString(s" $crn ").value mustBe CompanyCrn(crn)
+    }
+
+    "must capitalise the CompanyCrn values" in {
+      CompanyCrn.fromString(" qq123456 ").value mustBe CompanyCrn("QQ123456")
     }
 
     "must reject invalid CompanyUtr and CompanyCrn values" in {
       CompanyUtr.fromString("123") mustBe None
       CompanyCrn.fromString("12") mustBe None
+      CompanyCrn.fromString("abc12345") mustBe None
     }
 
     "must parse enum values case-insensitively" in {
