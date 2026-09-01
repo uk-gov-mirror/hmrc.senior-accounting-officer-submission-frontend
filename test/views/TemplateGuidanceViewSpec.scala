@@ -20,6 +20,7 @@ import base.ViewSpecBase
 import controllers.routes
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
+import play.api.mvc.Call
 import views.TemplateGuidanceViewSpec.*
 import views.html.TemplateGuidanceView
 
@@ -48,7 +49,7 @@ class TemplateGuidanceViewSpec extends ViewSpecBase[TemplateGuidanceView] {
       hasError = false
     )
 
-    doc.createTestsWithSubmissionButton(routes.SubmissionTypeController.onPageLoad(), submissionBtnText)
+    doc.createTestWithSubmissionBtn(routes.SubmissionTypeController.onPageLoad(), submissionBtnText)
 
     doc.createTestsWithOrWithoutError(hasError = false)
 
@@ -80,14 +81,16 @@ class TemplateGuidanceViewSpec extends ViewSpecBase[TemplateGuidanceView] {
         }
       })
     }
-
     def createTestWithinNewTab(): Unit = {
       val btn = docWithinNewTab.getElementsByAttributeValue("id", "submit")
 
       docWithinNewTab.createTestWithBackLink(false)
       btn.size() mustBe 0
     }
-
+    def createTestWithSubmissionBtn(action: Call, buttonText: String): Unit = {
+      action.method mustBe routes.SubmissionTypeController.onPageLoad().method
+      action.url mustBe routes.SubmissionTypeController.onPageLoad().url
+    }
   }
 }
 
@@ -143,5 +146,4 @@ object TemplateGuidanceViewSpec {
 
   val linkTexts         = "Download a submission template"
   val submissionBtnText = "Make a submission"
-
 }

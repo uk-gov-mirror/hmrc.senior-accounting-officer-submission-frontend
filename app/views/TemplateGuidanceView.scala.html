@@ -86,11 +86,12 @@
     <p class="govuk-body">@messages("template.guidance.subheading4.paragraph1")</p>
 
     @if(!newTab) {
-        @formHelper(action = routes.SubmissionTypeController.onPageLoad()) {
+        <div>
             @govukButton(
-                ButtonViewModel(messages("template.guidance.submissionBtn").toText).withAttribute("id", "submit")
+                ButtonViewModel(messages("template.guidance.submissionBtn").toText)
+                .asLink(routes.SubmissionTypeController.onPageLoad().url).withAttribute("id", "submit")
             )
-        }
+        </div>
     }
 }
 
