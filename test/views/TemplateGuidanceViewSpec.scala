@@ -26,12 +26,12 @@ import views.html.TemplateGuidanceView
 
 class TemplateGuidanceViewSpec extends ViewSpecBase[TemplateGuidanceView] {
 
-  val doc: Document             = Jsoup.parse(SUT().toString)
-  val docWithinNewTab: Document = Jsoup.parse(SUT(true).toString)
+  val doc: Document             = Jsoup.parse(SUT(false).toString)
+  val docWithinNewTab: Document = Jsoup.parse(SUT().toString)
   val mainContent: Element      = doc.getMainContent
 
   private def generateView(): Document = {
-    val view = SUT()
+    val view = SUT(false)
     Jsoup.parse(view.toString)
   }
 
@@ -102,7 +102,7 @@ object TemplateGuidanceViewSpec {
     "Download a submission template",
     "Complete all fields for each company in your group. Each row should represent one company your SAO was responsible for in the financial year.",
     "Do not change the layout or structure of the template. If you do, the upload will fail. Rows 1 to 9 of the template have guidance to help you complete each column.",
-    "You'll need to enter:",
+    "You’ll need to enter:",
     "If you have a qualified certificate, you must explain why in the template. Your explanation should include:",
     "You can also include any plans to address the issues, this is optional.",
     "You must complete the correct sections before uploading. The information we process from your template depends on which submission type you choose.",
@@ -111,7 +111,7 @@ object TemplateGuidanceViewSpec {
     "If you submit a notification now and want to add your certificate later, complete all columns and upload the template again when you are ready.",
     "If the template you uploaded has errors, you will be shown what to fix. Open your Excel file and correct the errors. Then save it again as a CSV (comma delimited) (*.csv) file and upload it again.",
     "If there are no errors, you will see a summary of your information to review before you continue.",
-    "Complete the remaining steps in the service. Your template will only be sent to HMRC once you have reviewed your answers and selected 'Confirm and submit'."
+    "Complete the remaining steps in the service. Your template will only be sent to HMRC once you have reviewed your answers and selected ‘Confirm and submit’."
   )
   val pageSubheadings: Seq[String] = Seq(
     "Step 1: Download and complete a submission template",

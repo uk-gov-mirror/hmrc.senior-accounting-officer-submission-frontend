@@ -16,13 +16,12 @@
 
 @this(
     layout: templates.Layout,
-    formHelper: FormWithCSRF,
     govukButton: GovukButton
 )
 
-@(newTab: Boolean=false)(using request: RequestHeader, messages: Messages)
+@(isNewTab: Boolean=true)(using request: RequestHeader, messages: Messages)
 
-@layout(showBackLink = !newTab, pageTitle = titleNoForm(messages("template.guidance.title"))) {
+@layout(showBackLink = !isNewTab, pageTitle = titleNoForm(messages("template.guidance.title"))) {
 
     <h1 class="govuk-heading-l">@messages("template.guidance.heading")</h1>
     <p class="govuk-body">@messages("template.guidance.paragraph1")</p>
@@ -40,23 +39,28 @@
     <p class="govuk-body">@messages("template.guidance.subheading1.paragraph3")</p>
 
     <ul class="govuk-list govuk-list--bullet">
-        @for(i <- 1 to 8) {
-        <li>@messages("template.guidance.subheading1.list.bullet"+i)</li>
-        }
+        <li>@messages("template.guidance.subheading1.list.item1")</li>
+        <li>@messages("template.guidance.subheading1.list.item2")</li>
+        <li>@messages("template.guidance.subheading1.list.item3")</li>
+        <li>@messages("template.guidance.subheading1.list.item4")</li>
+        <li>@messages("template.guidance.subheading1.list.item5")</li>
+        <li>@messages("template.guidance.subheading1.list.item6")</li>
+        <li>@messages("template.guidance.subheading1.list.item7")</li>
+        <li>@messages("template.guidance.subheading1.list.item8")</li>
     </ul>
 
-    <h3 class="govuk-heading-s">@messages("template.guidance.subheading1.smallerSubheading")</h3>
+    <h3 class="govuk-heading-s">@messages("template.guidance.subheading1.subSubheading")</h3>
 
-    <p class = "govuk-body">@messages("template.guidance.subheading1.smallerSubheading.paragraph1")</p>
+    <p class = "govuk-body">@messages("template.guidance.subheading1.subSubheading.paragraph1")</p>
 
     <ul class="govuk-list govuk-list--bullet">
-        @for(i <- 1 to 3) {
-            <li>@messages("template.guidance.subheading1.smallerSubheading.bullet"+i)</li>
-        }
+        <li>@messages("template.guidance.subheading1.subSubheading.item1")</li>
+        <li>@messages("template.guidance.subheading1.subSubheading.item2")</li>
+        <li>@messages("template.guidance.subheading1.subSubheading.item3")</li>
     </ul>
 
-    <p class = "govuk-body">@messages("template.guidance.subheading1.smallerSubheading.paragraph2")</p>
-    <div class = "govuk-inset-text">@messages("template.guidance.subheading1.smallerSubheading.inset")</div>
+    <p class = "govuk-body">@messages("template.guidance.subheading1.subSubheading.paragraph2")</p>
+    <div class = "govuk-inset-text">@messages("template.guidance.subheading1.subSubheading.inset")</div>
 
     <h3 class="govuk-heading-m">@messages("template.guidance.subheading2")</h3>
     <p class="govuk-body">@messages("template.guidance.subheading2.paragraph1")</p>
@@ -64,9 +68,9 @@
 
 
     <ul class="govuk-list govuk-list--bullet">
-        @for(i <- 1 to 3) {
-            <li>@messages("template.guidance.subheading2.list1.bullet"+i)</li>
-        }
+        <li>@messages("template.guidance.subheading2.list1.item1")</li>
+        <li>@messages("template.guidance.subheading2.list1.item2")</li>
+        <li>@messages("template.guidance.subheading2.list1.item3")</li>
     </ul>
 
     <p class="govuk-body">@messages("template.guidance.subheading2.paragraph3")</p>
@@ -85,10 +89,10 @@
     <h3 class="govuk-heading-m">@messages("template.guidance.subheading4")</h3>
     <p class="govuk-body">@messages("template.guidance.subheading4.paragraph1")</p>
 
-    @if(!newTab) {
+    @if(!isNewTab) {
         <div>
             @govukButton(
-                ButtonViewModel(messages("template.guidance.submissionBtn").toText)
+                ButtonViewModel(messages("template.guidance.submissionButton").toText)
                 .asLink(routes.SubmissionTypeController.onPageLoad().url).withAttribute("id", "submit")
             )
         </div>

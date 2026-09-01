@@ -33,11 +33,11 @@ class TemplateGuidanceController @Inject() (
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = identify { implicit request =>
-    Ok(view())
+    Ok(view(false))
   }
 
   def onPageLoadNewTab: Action[AnyContent] = identify { implicit request =>
-    Ok(view(true))
+    Ok(view())
   }
 
 }
