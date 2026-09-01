@@ -56,6 +56,5 @@ class TemplateGuidanceControllerSpec extends SpecBase {
         contentAsString(result) mustEqual view()(using request, messages(application)).toString
       }
     }
-
   }
 }
