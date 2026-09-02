@@ -26,12 +26,11 @@ import views.html.TemplateGuidanceView
 
 class TemplateGuidanceViewSpec extends ViewSpecBase[TemplateGuidanceView] {
 
-  val doc: Document             = Jsoup.parse(SUT().toString)
-  val docWithinNewTab: Document = Jsoup.parse(SUT(isNewTab = true).toString)
-  val mainContent: Element      = doc.getMainContent
+  val doc: Document        = Jsoup.parse(SUT().toString)
+  val mainContent: Element = doc.getMainContent
 
-  private def generateView(): Document = {
-    val view = SUT()
+  private def generateView(isNewTab: Boolean = false): Document = {
+    val view = SUT(isNewTab = isNewTab)
     Jsoup.parse(view.toString)
   }
 
@@ -65,10 +64,36 @@ class TemplateGuidanceViewSpec extends ViewSpecBase[TemplateGuidanceView] {
     doc.createTestsWithNumberedItems(pageNumberedListItems)
 
     doc.createTestForInsetText(pageInsetText)
+
   }
 
   "TemplateGuidanceView opened in a new tab" - {
-    docWithinNewTab.createTestWithinNewTab()
+    val docWithinNewTab = generateView(isNewTab = true)
+    docWithinNewTab.createTestForNoSubmissionButton()
+
+    docWithinNewTab.createTestsWithStandardPageElements(
+      pageTitle = pageTitle,
+      pageHeading = pageHeading,
+      showBackLink = false,
+      showIsThisPageNotWorkingProperlyLink = true,
+      hasError = false
+    )
+
+    docWithinNewTab.createTestsWithParagraphs(paragraphs)
+
+    docWithinNewTab.getMainContent
+      .select("a.govuk-link")
+      .get(0)
+      .createTestWithLink(linkTexts, routes.DownloadTemplateController.downloadFile().url)
+
+    docWithinNewTab.createTestsForSubHeadings(pageSubheadings)
+
+    docWithinNewTab.createTestsWithBulletPoints(pageBullets)
+
+    docWithinNewTab.createTestsWithNumberedItems(pageNumberedListItems)
+
+    docWithinNewTab.createTestForInsetText(pageInsetText)
+
   }
 
   extension (target: => Document) {
@@ -83,15 +108,20 @@ class TemplateGuidanceViewSpec extends ViewSpecBase[TemplateGuidanceView] {
         }
       })
     }
-    def createTestWithinNewTab(): Unit = {
-      val btn = docWithinNewTab.getElementsByAttributeValue("id", "submit")
 
-      docWithinNewTab.createTestWithBackLink(show = false)
-      btn.size() mustBe 0
+    def createTestForNoSubmissionButton(): Unit = {
+      val btn = target.getElementsByAttributeValue("id", "submit")
+
+      "must have the expected number of buttons" in {
+        btn.size() mustBe 0
+      }
     }
+
     def createTestWithSubmissionBtn(action: Call, buttonText: String): Unit = {
-      action.method mustBe routes.SubmissionTypeController.onPageLoad().method
-      action.url mustBe routes.SubmissionTypeController.onPageLoad().url
+      "must contain information to redirect user to the 'submission-type' page" in {
+        action.method mustBe routes.SubmissionTypeController.onPageLoad().method
+        action.url mustBe routes.SubmissionTypeController.onPageLoad().url
+      }
     }
   }
 }
