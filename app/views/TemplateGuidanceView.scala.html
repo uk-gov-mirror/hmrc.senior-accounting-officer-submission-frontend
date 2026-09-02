@@ -19,7 +19,7 @@
     govukButton: GovukButton
 )
 
-@(isNewTab: Boolean=true)(using request: RequestHeader, messages: Messages)
+@(isNewTab: Boolean=false)(using request: RequestHeader, messages: Messages)
 
 @layout(showBackLink = !isNewTab, pageTitle = titleNoForm(messages("template.guidance.title"))) {
 

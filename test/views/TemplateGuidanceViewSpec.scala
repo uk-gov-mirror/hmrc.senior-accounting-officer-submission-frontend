@@ -26,20 +26,19 @@ import views.html.TemplateGuidanceView
 
 class TemplateGuidanceViewSpec extends ViewSpecBase[TemplateGuidanceView] {
 
-  val doc: Document             = Jsoup.parse(SUT(false).toString)
-  val docWithinNewTab: Document = Jsoup.parse(SUT().toString)
+  val doc: Document             = Jsoup.parse(SUT().toString)
+  val isNewTab                  = true
+  val docWithinNewTab: Document = Jsoup.parse(SUT(isNewTab).toString)
   val mainContent: Element      = doc.getMainContent
 
   private def generateView(): Document = {
-    val view = SUT(false)
+    val view = SUT()
     Jsoup.parse(view.toString)
   }
 
-  "TemplateGuidanceView" - {
+  "TemplateGuidanceView not opened in a new tab" - {
 
     val doc = generateView()
-
-    docWithinNewTab.createTestWithinNewTab()
 
     doc.createTestsWithStandardPageElements(
       pageTitle = pageTitle,
@@ -67,6 +66,10 @@ class TemplateGuidanceViewSpec extends ViewSpecBase[TemplateGuidanceView] {
     doc.createTestsWithNumberedItems(pageNumberedListItems)
 
     doc.createTestForInsetText(pageInsetText)
+  }
+
+  "TemplateGuidanceView opened in a new tab" - {
+    docWithinNewTab.createTestWithinNewTab()
   }
 
   extension (target: => Document) {

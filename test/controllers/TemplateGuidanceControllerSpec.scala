@@ -37,13 +37,14 @@ class TemplateGuidanceControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[TemplateGuidanceView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(false)(using request, messages(application)).toString
+        contentAsString(result) mustEqual view()(using request, messages(application)).toString
       }
     }
 
     "must return OK and the correct view for a GET /template-guidance/new-tab" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val isNewTab    = true
 
       running(application) {
         val request = FakeRequest(GET, routes.TemplateGuidanceController.onPageLoadNewTab().url)
@@ -53,7 +54,7 @@ class TemplateGuidanceControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[TemplateGuidanceView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view()(using request, messages(application)).toString
+        contentAsString(result) mustEqual view(isNewTab)(using request, messages(application)).toString
       }
     }
   }
