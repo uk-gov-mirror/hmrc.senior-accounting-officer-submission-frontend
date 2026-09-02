@@ -40,7 +40,7 @@ object NotificationMultiSaoAreAllAddedSummary {
         actions = Seq(
           ActionItemViewModel(
             messages("site.change").toText,
-            notificationRoutes.NotificationMultiSaoAreAllAddedController.onPageLoad(CheckMode).url
+            notificationRoutes.NotificationMultiSaoAreAllAddedController.onPageLoad(CheckMode, saoIndex).url
           )
             .withVisuallyHiddenText(messages("notificationMultiSaoAreAllAdded.change.hidden"))
         )

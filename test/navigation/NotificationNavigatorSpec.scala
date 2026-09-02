@@ -211,6 +211,139 @@ class NotificationNavigatorSpec extends SpecBase with GuiceOneAppPerSuite {
 
     "in Check mode" - {
 
+      "on NotificationMoreThanOneSaoPage" - {
+
+        val userAnswersWithSingleSaoAndData = emptyUserAnswers
+          .set(NotificationMoreThanOneSaoPage, false)
+          .get
+          .set(NotificationSingleSaoOfficerNamePage, "Firstname Lastname")
+          .get
+
+        val userAnswersWithSingleSaoAndNoData = emptyUserAnswers
+          .set(NotificationMoreThanOneSaoPage, false)
+          .get
+
+        val userAnswersWithMultipleSaoAndData = emptyUserAnswers
+          .set(NotificationMoreThanOneSaoPage, true)
+          .get
+          .set(NotificationMultiSaoLastOfficerNamePage, "Firstname Lastname")
+          .get
+          .set(NotificationMultiSaoLastOfficerStartDatePage, LocalDate.now())
+          .get
+          .set(NotificationMultiSaoPreviousOfficerNamePage(0), "Firstname Lastname II")
+          .get
+          .set(NotificationMultiSaoPreviousOfficerStartDatePage(0), LocalDate.now())
+          .get
+          .set(NotificationMultiSaoPreviousOfficerEndDatePage(0), LocalDate.now())
+          .get
+          .set(NotificationMultiSaoAreAllAddedPage(0), true)
+          .get
+
+        val userAnswersWithMultipleSaoAndNoData = emptyUserAnswers
+          .set(NotificationMoreThanOneSaoPage, true)
+          .get
+
+        "the user responds no meaning there is only one SAO" - {
+          "user answers contains answers for the single SAO route" - {
+            "we are redirected to the notification check your answers page" in {
+              navigator.nextPage(
+                NotificationMoreThanOneSaoPage,
+                CheckMode,
+                userAnswersWithSingleSaoAndData
+              ) mustBe notificationRoutes.NotificationCheckYourAnswersController.onPageLoad()
+            }
+          }
+
+          "user answers does not contain answers for the single SAO route" - {
+            "we are redirected to the single sao name page in normal mode" in {
+              navigator.nextPage(
+                NotificationMoreThanOneSaoPage,
+                CheckMode,
+                userAnswersWithSingleSaoAndNoData
+              ) mustBe notificationRoutes.NotificationSingleSaoOfficerNameController.onPageLoad(NormalMode)
+            }
+          }
+        }
+
+        "the user responds yes meaning there are multiple SAOs" - {
+          "user answers contains answers for the multiple SAO route" - {
+            "we are redirected to the notification check your answers page" in {
+              navigator.nextPage(
+                NotificationMoreThanOneSaoPage,
+                CheckMode,
+                userAnswersWithMultipleSaoAndData
+              ) mustBe notificationRoutes.NotificationCheckYourAnswersController.onPageLoad()
+            }
+          }
+
+          "user answers does not contain answers for the multiple SAO route" - {
+            "we are redirected to the NotificationMultiSaoLastOfficerNameController page in normal mode" in {
+              navigator.nextPage(
+                NotificationMoreThanOneSaoPage,
+                CheckMode,
+                userAnswersWithMultipleSaoAndNoData
+              ) mustBe notificationRoutes.NotificationMultiSaoLastOfficerNameController.onPageLoad(NormalMode)
+            }
+          }
+        }
+      }
+
+      "when on NotificationSingleSaoOfficerNamePage, must go to notification check your answers page" in {
+        navigator.nextPage(
+          NotificationSingleSaoOfficerNamePage,
+          CheckMode,
+          emptyUserAnswers
+        ) mustBe notificationRoutes.NotificationCheckYourAnswersController.onPageLoad()
+      }
+
+      "when on NotificationMultiSaoLastOfficerNamePage, must go to notification check your answers page" in {
+        navigator.nextPage(
+          NotificationMultiSaoLastOfficerNamePage,
+          CheckMode,
+          emptyUserAnswers
+        ) mustBe notificationRoutes.NotificationCheckYourAnswersController.onPageLoad()
+      }
+
+      "when on NotificationMultiSaoLastOfficerStartDatePage, must go to notification check your answers page" in {
+        navigator.nextPage(
+          NotificationMultiSaoLastOfficerStartDatePage,
+          CheckMode,
+          emptyUserAnswers
+        ) mustBe notificationRoutes.NotificationCheckYourAnswersController.onPageLoad()
+      }
+
+      "when on NotificationMultiSaoPreviousOfficerNamePage, must go to notification check your answers page" in {
+        navigator.nextPage(
+          NotificationMultiSaoPreviousOfficerNamePage(0),
+          CheckMode,
+          emptyUserAnswers
+        ) mustBe notificationRoutes.NotificationCheckYourAnswersController.onPageLoad()
+      }
+
+      "when on NotificationMultiSaoPreviousOfficerStartDatePage, must go to notification check your answers page" in {
+        navigator.nextPage(
+          NotificationMultiSaoPreviousOfficerStartDatePage(0),
+          CheckMode,
+          emptyUserAnswers
+        ) mustBe notificationRoutes.NotificationCheckYourAnswersController.onPageLoad()
+      }
+
+      "when on NotificationMultiSaoPreviousOfficerEndDatePage, must go to notification check your answers page" in {
+        navigator.nextPage(
+          NotificationMultiSaoPreviousOfficerEndDatePage(0),
+          CheckMode,
+          emptyUserAnswers
+        ) mustBe notificationRoutes.NotificationCheckYourAnswersController.onPageLoad()
+      }
+
+      "when on NotificationMultiSaoAreAllAddedPage, must go to notification check your answers page" in {
+        navigator.nextPage(
+          NotificationMultiSaoAreAllAddedPage(0),
+          CheckMode,
+          emptyUserAnswers
+        ) mustBe notificationRoutes.NotificationCheckYourAnswersController.onPageLoad()
+      }
+
       "when on NotificationAdditionalInformationPage, must go to notification check your answers page" in {
         navigator.nextPage(
           NotificationAdditionalInformationPage,

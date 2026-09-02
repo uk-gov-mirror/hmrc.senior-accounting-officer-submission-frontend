@@ -42,7 +42,7 @@ object NotificationMultiSaoPreviousOfficerEndDateSummary {
         actions = Seq(
           ActionItemViewModel(
             messages("site.change").toText,
-            notificationRoutes.NotificationMultiSaoPreviousOfficerEndDateController.onPageLoad(CheckMode).url
+            notificationRoutes.NotificationMultiSaoPreviousOfficerEndDateController.onPageLoad(CheckMode, saoIndex).url
           )
             .withVisuallyHiddenText(messages("notificationMultiSaoPreviousOfficerEndDate.change.hidden"))
         )

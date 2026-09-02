@@ -84,6 +84,20 @@ class NotificationMultiSaoPreviousOfficerEndDateSummarySpec extends SpecBase wit
             .url
         }
 
+        "must include the SAO index in the url" in {
+          val answers = emptyUserAnswers
+            .set(NotificationMultiSaoPreviousOfficerEndDatePage(0), LocalDate.of(2000, 1, 1))
+            .get
+            .set(NotificationMultiSaoPreviousOfficerEndDatePage(1), LocalDate.of(2000, 1, 1))
+            .get
+
+          val action = NotificationMultiSaoPreviousOfficerEndDateSummary.row(answers, 1).get.actions.head.items.head
+
+          action.href mustBe notificationRoutes.NotificationMultiSaoPreviousOfficerEndDateController
+            .onPageLoad(CheckMode, 1)
+            .url
+        }
+
         "must have expected hidden text" in {
           action.visuallyHiddenText.get mustBe "NotificationMultiSaoPreviousOfficerEndDate"
         }

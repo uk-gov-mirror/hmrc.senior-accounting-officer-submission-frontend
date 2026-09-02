@@ -82,11 +82,24 @@ class NotificationMultiSaoAreAllAddedSummarySpec extends SpecBase with GuiceOneA
             .url
         }
 
+        "must include the SAO index in the url" in {
+          val answers = emptyUserAnswers
+            .set(NotificationMultiSaoAreAllAddedPage(0), false)
+            .get
+            .set(NotificationMultiSaoAreAllAddedPage(1), true)
+            .get
+
+          val action = NotificationMultiSaoAreAllAddedSummary.row(answers, 1).get.actions.head.items.head
+
+          action.href mustBe notificationRoutes.NotificationMultiSaoAreAllAddedController
+            .onPageLoad(CheckMode, 1)
+            .url
+        }
+
         "must have expected hidden text" in {
           action.visuallyHiddenText.get mustBe "NotificationMultiSaoAreAllAdded"
         }
       }
     }
   }
-
 }

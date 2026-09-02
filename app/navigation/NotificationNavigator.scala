@@ -76,10 +76,49 @@ class NotificationNavigator @Inject() () extends Navigator {
   }
 
   override protected val checkRouteMap: Page => UserAnswers => Call = {
-    case NotificationAdditionalInformationPage =>
-      _ => notificationRoutes.NotificationCheckYourAnswersController.onPageLoad()
+    case NotificationMoreThanOneSaoPage =>
+      userAnswers =>
+        userAnswers.get(NotificationMoreThanOneSaoPage) match {
+          case Some(true) =>
+            if hasMultiSaoAnswers(userAnswers) then
+              notificationRoutes.NotificationCheckYourAnswersController.onPageLoad()
+            else notificationRoutes.NotificationMultiSaoLastOfficerNameController.onPageLoad(NormalMode)
+          case Some(false) =>
+            if hasSingleSaoAnswers(userAnswers) then
+              notificationRoutes.NotificationCheckYourAnswersController.onPageLoad()
+            else notificationRoutes.NotificationSingleSaoOfficerNameController.onPageLoad(NormalMode)
+          case _ => ???
+        }
     case NotificationSingleSaoOfficerNamePage =>
       _ => notificationRoutes.NotificationCheckYourAnswersController.onPageLoad()
+    case NotificationMultiSaoLastOfficerNamePage =>
+      _ => notificationRoutes.NotificationCheckYourAnswersController.onPageLoad()
+    case NotificationMultiSaoLastOfficerStartDatePage =>
+      _ => notificationRoutes.NotificationCheckYourAnswersController.onPageLoad()
+    case NotificationMultiSaoPreviousOfficerNamePage(_) =>
+      _ => notificationRoutes.NotificationCheckYourAnswersController.onPageLoad()
+    case NotificationMultiSaoPreviousOfficerStartDatePage(_) =>
+      _ => notificationRoutes.NotificationCheckYourAnswersController.onPageLoad()
+    case NotificationMultiSaoPreviousOfficerEndDatePage(_) =>
+      _ => notificationRoutes.NotificationCheckYourAnswersController.onPageLoad()
+    case NotificationMultiSaoAreAllAddedPage(_) =>
+      _ => notificationRoutes.NotificationCheckYourAnswersController.onPageLoad()
+    case NotificationAdditionalInformationPage =>
+      _ => notificationRoutes.NotificationCheckYourAnswersController.onPageLoad()
     case _ => _ => ???
+  }
+
+  private def hasSingleSaoAnswers(userAnswers: UserAnswers): Boolean = {
+    userAnswers.get(NotificationMoreThanOneSaoPage).nonEmpty &&
+    userAnswers.get(NotificationSingleSaoOfficerNamePage).nonEmpty
+  }
+
+  private def hasMultiSaoAnswers(userAnswers: UserAnswers): Boolean = {
+    userAnswers.get(NotificationMultiSaoLastOfficerNamePage).nonEmpty &&
+    userAnswers.get(NotificationMultiSaoLastOfficerStartDatePage).nonEmpty &&
+    userAnswers.get(NotificationMultiSaoPreviousOfficerNamePage(0)).nonEmpty &&
+    userAnswers.get(NotificationMultiSaoPreviousOfficerStartDatePage(0)).nonEmpty &&
+    userAnswers.get(NotificationMultiSaoPreviousOfficerEndDatePage(0)).nonEmpty &&
+    userAnswers.get(NotificationMultiSaoAreAllAddedPage(0)).nonEmpty
   }
 }
