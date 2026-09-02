@@ -27,8 +27,7 @@ import views.html.TemplateGuidanceView
 class TemplateGuidanceViewSpec extends ViewSpecBase[TemplateGuidanceView] {
 
   val doc: Document             = Jsoup.parse(SUT().toString)
-  val isNewTab                  = true
-  val docWithinNewTab: Document = Jsoup.parse(SUT(isNewTab).toString)
+  val docWithinNewTab: Document = Jsoup.parse(SUT(isNewTab = true).toString)
   val mainContent: Element      = doc.getMainContent
 
   private def generateView(): Document = {
@@ -87,7 +86,7 @@ class TemplateGuidanceViewSpec extends ViewSpecBase[TemplateGuidanceView] {
     def createTestWithinNewTab(): Unit = {
       val btn = docWithinNewTab.getElementsByAttributeValue("id", "submit")
 
-      docWithinNewTab.createTestWithBackLink(false)
+      docWithinNewTab.createTestWithBackLink(show = false)
       btn.size() mustBe 0
     }
     def createTestWithSubmissionBtn(action: Call, buttonText: String): Unit = {
