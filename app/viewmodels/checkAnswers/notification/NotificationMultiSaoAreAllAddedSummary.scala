@@ -23,7 +23,6 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.converters.*
 import viewmodels.govuk.summarylist.*
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 object NotificationMultiSaoAreAllAddedSummary {
 
@@ -32,15 +31,11 @@ object NotificationMultiSaoAreAllAddedSummary {
       val value = if answer then "site.yes" else "site.no"
       SummaryListRowViewModel(
         key = messages("notificationMultiSaoAreAllAdded.checkYourAnswersLabel").toKey,
-        value = ValueViewModel(
-          HtmlContent(
-            s"""<span data-test-id="sao-are-all-added-${saoIndex + 1}">${messages(value)}</span>"""
-          )
-        ),
+        value = ValueViewModel(messages(value).toText),
         actions = Seq(
           ActionItemViewModel(
             messages("site.change").toText,
-            notificationRoutes.NotificationMultiSaoAreAllAddedController.onPageLoad(CheckMode, saoIndex).url
+            notificationRoutes.NotificationMultiSaoAreAllAddedController.onPageLoad(CheckMode).url
           )
             .withVisuallyHiddenText(messages("notificationMultiSaoAreAllAdded.change.hidden"))
         )

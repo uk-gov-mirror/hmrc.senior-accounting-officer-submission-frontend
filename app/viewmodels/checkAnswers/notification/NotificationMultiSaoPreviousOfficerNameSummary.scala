@@ -23,37 +23,21 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.converters.*
 import viewmodels.govuk.summarylist.*
-import pages.notification.NotificationMultiSaoLastOfficerNamePage
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 object NotificationMultiSaoPreviousOfficerNameSummary {
 
   def row(answers: UserAnswers, saoIndex: Int)(using messages: Messages): Option[SummaryListRow] =
-    val priorSaoNamePage =
-      if saoIndex == 0 then { NotificationMultiSaoLastOfficerNamePage }
-      else { NotificationMultiSaoPreviousOfficerNamePage(saoIndex - 1) }
-
-    answers
-      .get(
-        priorSaoNamePage
-      )
-      .flatMap { priorSaoName =>
-        answers.get(NotificationMultiSaoPreviousOfficerNamePage(saoIndex)).map { answer =>
-          SummaryListRowViewModel(
-            key = messages(
-              "notificationMultiSaoPreviousOfficerName.checkYourAnswersLabel",
-              priorSaoName
-            ).toKey,
-            value =
-              ValueViewModel(HtmlContent(s"""<span data-test-id="previous-sao-name-${saoIndex + 1}">$answer</span>""")),
-            actions = Seq(
-              ActionItemViewModel(
-                messages("site.change").toText,
-                notificationRoutes.NotificationMultiSaoPreviousOfficerNameController.onPageLoad(CheckMode, saoIndex).url
-              )
-                .withVisuallyHiddenText(messages("notificationMultiSaoPreviousOfficerName.change.hidden"))
-            )
+    answers.get(NotificationMultiSaoPreviousOfficerNamePage(saoIndex)).map { answer =>
+      SummaryListRowViewModel(
+        key = messages("notificationMultiSaoPreviousOfficerName.checkYourAnswersLabel").toKey,
+        value = ValueViewModel(answer.toText),
+        actions = Seq(
+          ActionItemViewModel(
+            messages("site.change").toText,
+            notificationRoutes.NotificationMultiSaoPreviousOfficerNameController.onPageLoad(CheckMode, saoIndex).url
           )
-        }
-      }
+            .withVisuallyHiddenText(messages("notificationMultiSaoPreviousOfficerName.change.hidden"))
+        )
+      )
+    }
 }

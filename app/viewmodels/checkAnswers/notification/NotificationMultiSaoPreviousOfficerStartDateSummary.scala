@@ -24,7 +24,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.DateTimeFormats.dateTimeFormat
 import viewmodels.converters.*
 import viewmodels.govuk.summarylist.*
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 object NotificationMultiSaoPreviousOfficerStartDateSummary {
 
@@ -33,18 +32,11 @@ object NotificationMultiSaoPreviousOfficerStartDateSummary {
       given Lang = messages.lang
       SummaryListRowViewModel(
         key = messages("notificationMultiSaoPreviousOfficerStartDate.checkYourAnswersLabel").toKey,
-        value = ValueViewModel(
-          HtmlContent(
-            s"""<span data-test-id="previous-sao-start-date-${saoIndex + 1}">${answer
-                .format(dateTimeFormat())}</span>"""
-          )
-        ),
+        value = ValueViewModel(answer.format(dateTimeFormat()).toText),
         actions = Seq(
           ActionItemViewModel(
             messages("site.change").toText,
-            notificationRoutes.NotificationMultiSaoPreviousOfficerStartDateController
-              .onPageLoad(CheckMode, saoIndex)
-              .url
+            notificationRoutes.NotificationMultiSaoPreviousOfficerStartDateController.onPageLoad(CheckMode).url
           )
             .withVisuallyHiddenText(messages("notificationMultiSaoPreviousOfficerStartDate.change.hidden"))
         )

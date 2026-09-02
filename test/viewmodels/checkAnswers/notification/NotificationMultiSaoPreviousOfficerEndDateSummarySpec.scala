@@ -25,8 +25,6 @@ import play.api.i18n.{Messages, MessagesApi}
 import uk.gov.hmrc.govukfrontend.views.Implicits.RichString
 
 import java.time.LocalDate
-import viewmodels.checkAnswers.notification.NotificationMultiSaoPreviousOfficerEndDateSummarySpec.*
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 class NotificationMultiSaoPreviousOfficerEndDateSummarySpec extends SpecBase with GuiceOneAppPerSuite {
   given Messages = app.injector.instanceOf[MessagesApi].preferred(Seq.empty)
@@ -49,14 +47,12 @@ class NotificationMultiSaoPreviousOfficerEndDateSummarySpec extends SpecBase wit
         NotificationMultiSaoPreviousOfficerEndDateSummary.row(testUserAnswers(answer), 0).get
 
       "must have expected key" in {
-        SUT().key mustBe keyText.toKey
+        SUT().key mustBe "NotificationMultiSaoPreviousOfficerEndDate".toKey
       }
 
       "expected value" - {
         "must show '1 January 2000' when user answers is 1st Jan 2000" in {
-          SUT(answer = LocalDate.of(2000, 1, 1)).value.content mustBe HtmlContent(
-            s"""<span data-test-id="previous-sao-end-date-1">$expectedDate</span>"""
-          )
+          SUT(answer = LocalDate.of(2000, 1, 1)).value.content mustBe "1 January 2000".toText
         }
       }
 
@@ -84,20 +80,6 @@ class NotificationMultiSaoPreviousOfficerEndDateSummarySpec extends SpecBase wit
             .url
         }
 
-        "must include the SAO index in the url" in {
-          val answers = emptyUserAnswers
-            .set(NotificationMultiSaoPreviousOfficerEndDatePage(0), LocalDate.of(2000, 1, 1))
-            .get
-            .set(NotificationMultiSaoPreviousOfficerEndDatePage(1), LocalDate.of(2000, 1, 1))
-            .get
-
-          val action = NotificationMultiSaoPreviousOfficerEndDateSummary.row(answers, 1).get.actions.head.items.head
-
-          action.href mustBe notificationRoutes.NotificationMultiSaoPreviousOfficerEndDateController
-            .onPageLoad(CheckMode, 1)
-            .url
-        }
-
         "must have expected hidden text" in {
           action.visuallyHiddenText.get mustBe "NotificationMultiSaoPreviousOfficerEndDate"
         }
@@ -105,9 +87,4 @@ class NotificationMultiSaoPreviousOfficerEndDateSummarySpec extends SpecBase wit
     }
   }
 
-}
-
-object NotificationMultiSaoPreviousOfficerEndDateSummarySpec {
-  val keyText      = "End date"
-  val expectedDate = "1 January 2000"
 }

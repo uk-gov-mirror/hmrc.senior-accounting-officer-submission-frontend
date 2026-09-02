@@ -24,8 +24,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.DateTimeFormats.dateTimeFormat
 import viewmodels.converters.*
 import viewmodels.govuk.summarylist.*
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 object NotificationMultiSaoLastOfficerStartDateSummary {
 
@@ -34,12 +32,7 @@ object NotificationMultiSaoLastOfficerStartDateSummary {
       given Lang = messages.lang
       SummaryListRowViewModel(
         key = messages("notificationMultiSaoLastOfficerStartDate.checkYourAnswersLabel").toKey,
-        value = ValueViewModel(
-          HtmlContent(
-            s"""<span data-test-id="final-sao-start-date">${HtmlFormat
-                .escape(answer.format(dateTimeFormat()))}</span>"""
-          )
-        ),
+        value = ValueViewModel(answer.format(dateTimeFormat()).toText),
         actions = Seq(
           ActionItemViewModel(
             messages("site.change").toText,

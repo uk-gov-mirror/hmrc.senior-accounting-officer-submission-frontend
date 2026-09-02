@@ -23,7 +23,6 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import pages.notification.NotificationMultiSaoAreAllAddedPage
 import play.api.i18n.{Messages, MessagesApi}
 import uk.gov.hmrc.govukfrontend.views.Implicits.RichString
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 class NotificationMultiSaoAreAllAddedSummarySpec extends SpecBase with GuiceOneAppPerSuite {
   given Messages = app.injector.instanceOf[MessagesApi].preferred(Seq.empty)
@@ -45,16 +44,16 @@ class NotificationMultiSaoAreAllAddedSummarySpec extends SpecBase with GuiceOneA
       def SUT(answer: Boolean = true) = NotificationMultiSaoAreAllAddedSummary.row(testUserAnswers(answer), 0).get
 
       "must have expected key" in {
-        SUT().key mustBe "Have you added all the SAOs for this notification?".toKey
+        SUT().key mustBe "notificationMultiSaoAreAllAdded".toKey
       }
 
       "expected value" - {
         "must show 'Yes' when user answers is true" in {
-          SUT(answer = true).value.content mustBe HtmlContent("""<span data-test-id="sao-are-all-added-1">Yes</span>""")
+          SUT(answer = true).value.content mustBe "Yes".toText
         }
 
         "must show 'No' when user answers is false" in {
-          SUT(answer = false).value.content mustBe HtmlContent("""<span data-test-id="sao-are-all-added-1">No</span>""")
+          SUT(answer = false).value.content mustBe "No".toText
         }
       }
 
@@ -82,24 +81,11 @@ class NotificationMultiSaoAreAllAddedSummarySpec extends SpecBase with GuiceOneA
             .url
         }
 
-        "must include the SAO index in the url" in {
-          val answers = emptyUserAnswers
-            .set(NotificationMultiSaoAreAllAddedPage(0), false)
-            .get
-            .set(NotificationMultiSaoAreAllAddedPage(1), true)
-            .get
-
-          val action = NotificationMultiSaoAreAllAddedSummary.row(answers, 1).get.actions.head.items.head
-
-          action.href mustBe notificationRoutes.NotificationMultiSaoAreAllAddedController
-            .onPageLoad(CheckMode, 1)
-            .url
-        }
-
         "must have expected hidden text" in {
           action.visuallyHiddenText.get mustBe "NotificationMultiSaoAreAllAdded"
         }
       }
     }
   }
+
 }
