@@ -16,15 +16,17 @@
 
 @this(
     layout: templates.Layout,
+    govukButton: GovukButton
 )
 
-@()(using request: RequestHeader, messages: Messages)
+@(isNewTab: Boolean=false)(using request: RequestHeader, messages: Messages)
 
-@layout(showBackLink = false, pageTitle = titleNoForm(messages("template.guidance.title"))) {
+@layout(showBackLink = !isNewTab, pageTitle = titleNoForm(messages("template.guidance.title"))) {
+
     <h1 class="govuk-heading-l">@messages("template.guidance.heading")</h1>
     <p class="govuk-body">@messages("template.guidance.paragraph1")</p>
 
-    <h3 class="govuk-heading-s">@messages("template.guidance.subheading1")</h3>
+    <h3 class="govuk-heading-m">@messages("template.guidance.subheading1")</h3>
 
     <p class="govuk-body">
         <a class="govuk-link" href="@routes.DownloadTemplateController.downloadFile()">
@@ -36,55 +38,65 @@
     <p class="govuk-body">@messages("template.guidance.subheading1.paragraph2")</p>
     <p class="govuk-body">@messages("template.guidance.subheading1.paragraph3")</p>
 
-    <h3 class="govuk-heading-s">@messages("template.guidance.subheading2")</h3>
-    <p class="govuk-body">@messages("template.guidance.subheading2.paragraph1")</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("template.guidance.subheading1.list.item1")</li>
+        <li>@messages("template.guidance.subheading1.list.item2")</li>
+        <li>@messages("template.guidance.subheading1.list.item3")</li>
+        <li>@messages("template.guidance.subheading1.list.item4")</li>
+        <li>@messages("template.guidance.subheading1.list.item5")</li>
+        <li>@messages("template.guidance.subheading1.list.item6")</li>
+        <li>@messages("template.guidance.subheading1.list.item7")</li>
+        <li>@messages("template.guidance.subheading1.list.item8")</li>
+    </ul>
 
-    <ol class="govuk-list govuk-list--number">
+    <h3 class="govuk-heading-s">@messages("template.guidance.subheading1.subSubheading")</h3>
+
+    <p class = "govuk-body">@messages("template.guidance.subheading1.subSubheading.paragraph1")</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("template.guidance.subheading1.subSubheading.item1")</li>
+        <li>@messages("template.guidance.subheading1.subSubheading.item2")</li>
+        <li>@messages("template.guidance.subheading1.subSubheading.item3")</li>
+    </ul>
+
+    <p class = "govuk-body">@messages("template.guidance.subheading1.subSubheading.paragraph2")</p>
+    <div class = "govuk-inset-text">@messages("template.guidance.subheading1.subSubheading.inset")</div>
+
+    <h3 class="govuk-heading-m">@messages("template.guidance.subheading2")</h3>
+    <p class="govuk-body">@messages("template.guidance.subheading2.paragraph1")</p>
+    <p class="govuk-body">@messages("template.guidance.subheading2.paragraph2")</p>
+
+
+    <ul class="govuk-list govuk-list--bullet">
         <li>@messages("template.guidance.subheading2.list1.item1")</li>
         <li>@messages("template.guidance.subheading2.list1.item2")</li>
         <li>@messages("template.guidance.subheading2.list1.item3")</li>
-        <li>@messages("template.guidance.subheading2.list1.item4")</li>
+    </ul>
+
+    <p class="govuk-body">@messages("template.guidance.subheading2.paragraph3")</p>
+
+    <ol class="govuk-list govuk-list&#45;&#45;number">
+        <li>@messages("template.guidance.subheading2.list2.item1")</li>
+        <li>@messages("template.guidance.subheading2.list2.item2")</li>
     </ol>
 
-    <div class="govuk-inset-text">
-        @messages("template.guidance.subheading2.inset.text")
-    </div>
+    <p class="govuk-body">@messages("template.guidance.subheading2.paragraph4")</p>
 
-    <h3 class="govuk-heading-s">@messages("template.guidance.subheading3")</h3>
+    <h3 class="govuk-heading-m">@messages("template.guidance.subheading3")</h3>
     <p class="govuk-body">@messages("template.guidance.subheading3.paragraph1")</p>
-    <p class="govuk-body">
-        @Html(messages("template.guidance.subheading3.paragraph2WithLink", routes.DownloadTemplateController.downloadFile()))
-    </p>
-    <p class="govuk-body">@messages("template.guidance.subheading3.paragraph3")</p>
-    <p class="govuk-body">@messages("template.guidance.subheading3.paragraph4")</p>
+    <p class="govuk-body">@messages("template.guidance.subheading3.paragraph2")</p>
 
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("template.guidance.subheading3.list1.item1")</li>
-        <li>@messages("template.guidance.subheading3.list1.item2")</li>
-        <li>@messages("template.guidance.subheading3.list1.item3")</li>
-    </ul>
-
-    <p class="govuk-body">@messages("template.guidance.subheading3.paragraph5")</p>
-    <p class="govuk-body">@messages("template.guidance.subheading3.paragraph6")</p>
-
-    <h3 class="govuk-heading-s">@messages("template.guidance.subheading4")</h3>
+    <h3 class="govuk-heading-m">@messages("template.guidance.subheading4")</h3>
     <p class="govuk-body">@messages("template.guidance.subheading4.paragraph1")</p>
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("template.guidance.subheading4.list1.item1")</li>
-        <li>@messages("template.guidance.subheading4.list1.item2")</li>
-    </ul>
 
-    <h3 class="govuk-heading-s">@messages("template.guidance.subheading5")</h3>
-    <ol class="govuk-list govuk-list--number">
-        <li>@messages("template.guidance.subheading5.list1.item1")</li>
-        <li>@messages("template.guidance.subheading5.list1.item2")</li>
-    </ol>
-
-    <h3 class="govuk-heading-s">@messages("template.guidance.subheading6")</h3>
-    <ol class="govuk-list govuk-list--number">
-        <li>@messages("template.guidance.subheading6.list1.item1")</li>
-        <li>@messages("template.guidance.subheading6.list1.item2")</li>
-    </ol>
+    @if(!isNewTab) {
+        <div>
+            @govukButton(
+                ButtonViewModel(messages("template.guidance.submissionButton").toText)
+                .asLink(routes.SubmissionTypeController.onPageLoad().url).withAttribute("id", "submit")
+            )
+        </div>
+    }
 }
 
 @{

@@ -35,4 +35,8 @@ class TemplateGuidanceController @Inject() (
   def onPageLoad: Action[AnyContent] = identify { implicit request =>
     Ok(view())
   }
+
+  def onPageLoadNewTab: Action[AnyContent] = identify { implicit request =>
+    Ok(view(isNewTab = true))
+  }
 }
