@@ -35,6 +35,17 @@ class UploadTemplateTableErrorViewSpec extends ViewSpecBase[UploadTemplateTableE
 
   "UploadTemplateTableErrorView" - {
 
+    val expectedParagraphsByScenario: Map[String, Seq[String]] = Map(
+      "the template is invalid" -> Seq(
+        "The file you uploaded is not the Senior Accounting Officer notification and certificate submission template. Download a submission template and read guidance on how to complete it (opens in new tab)",
+        "Once you’ve completed the template, upload it again."
+      ),
+      "the template empty" -> Seq(
+        "Your template does not contain any company details. Download a submission template and read guidance on how to complete it (opens in new tab)",
+        "Once you’ve completed the template, upload it again."
+      )
+    )
+
     invalidTemplates.foreach { case (testScenario, data) =>
       def doc = generateView(data)
       s"when the UploadTemplateTableData indicates $testScenario" - {
@@ -46,12 +57,7 @@ class UploadTemplateTableErrorViewSpec extends ViewSpecBase[UploadTemplateTableE
           hasError = false
         )
 
-        doc.createTestsWithParagraphs(
-          Seq(
-            "The file you uploaded is not the Senior Accounting Officer notification and certificate submission template. Download a submission template and read guidance on how to complete it (opens in new tab)",
-            "Once you’ve completed the template, upload it again."
-          )
-        )
+        doc.createTestsWithParagraphs(expectedParagraphsByScenario(testScenario))
 
         "must render a guidance link" in {
           val link = doc.getMainContent
@@ -70,7 +76,6 @@ class UploadTemplateTableErrorViewSpec extends ViewSpecBase[UploadTemplateTableE
           notificationRoutes.UploadTemplateTableController.onSubmit(),
           "Upload a submission template"
         )
-
       }
     }
 

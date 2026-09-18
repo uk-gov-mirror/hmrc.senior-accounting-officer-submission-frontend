@@ -275,6 +275,7 @@ uploadTemplateTableError.paragraph1WithLink = Review and correct the errors in y
 uploadTemplateTableError.problems.heading = Problems with your file
 uploadTemplateTableError.problems.summary = Your file has {0} errors. At least one company has missing information or is not in the correct format.
 uploadTemplateTableError.fileFormat.error.paragraph1WithLink = The file you uploaded is not the Senior Accounting Officer notification and certificate submission template.<br/><a {0}>Download a submission template and read guidance on how to complete it (opens in new tab)</a>
+uploadTemplateTableError.empty.error.paragraph1WithLink = Your template does not contain any company details.<br/><a {0}>Download a submission template and read guidance on how to complete it (opens in new tab)</a>
 uploadTemplateTableError.fileFormat.error.paragraph2 = Once you’ve completed the template, upload it again.
 uploadTemplateTableError.errors.none = No parse errors
 uploadTemplateTableError.errors.line = Row

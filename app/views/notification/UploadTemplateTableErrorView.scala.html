@@ -50,7 +50,9 @@
 
     <h1 class="govuk-heading-l">@messages("uploadTemplateTableError.heading")</h1>
 
-    @if(tableData.notSaoTemplateOrIsEmpty) {
+    @if(tableData.isEmpty) {
+        @emptyTemplate()
+    } else if(tableData.notSaoTemplateOrIsEmpty) {
         @notSaoTemplate()
     } else {
         @invalidData()
@@ -66,6 +68,11 @@
 @notSaoTemplate() = {
     <p class="govuk-body">@Html(messages("uploadTemplateTableError.fileFormat.error.paragraph1WithLink", templateGuidanceLinkAttributes))</p>
     <p class="govuk-body govuk-!-margin-bottom-8">@messages("uploadTemplateTableError.fileFormat.error.paragraph2")</p>
+}
+
+@emptyTemplate() = {
+<p class="govuk-body">@Html(messages("uploadTemplateTableError.empty.error.paragraph1WithLink", templateGuidanceLinkAttributes))</p>
+<p class="govuk-body govuk-!-margin-bottom-8">@messages("uploadTemplateTableError.fileFormat.error.paragraph2")</p>
 }
 
 @invalidData() = {
