@@ -435,7 +435,7 @@ certificateReviewUnqualified.heading = Review the companies with an unqualified 
 certificateReviewUnqualified.caption = Submit a certificate
 certificateReviewUnqualified.paragraph1.plural = This list is from the certificate details in your submission template. There were {0} companies the SAO was responsible for in a previous financial year.
 certificateReviewUnqualified.paragraph1.singular = This list is from the certificate details in your submission template. There was {0} company the SAO was responsible for in a previous financial year.
-certificateReviewUnqualified.paragraph2WithLink = If any companies listed are missing or incorrect, <a class="govuk-link" href={0}>upload an updated submission template</a> before continuing.
+certificateReviewUnqualified.paragraph2WithLink = If any company’s listed are missing or incorrect, <a class="govuk-link" href={0}>upload an updated submission template</a> before continuing.
 certificateReviewUnqualified.paragraph3.plural = In accordance with Paragraph 2, Schedule 46 of the Finance Act 2009, I {0}, the Senior Accounting Officer hereby certify that {1} companies had appropriate tax accounting arrangements throughout the year.
 certificateReviewUnqualified.paragraph3.singular = In accordance with Paragraph 2, Schedule 46 of the Finance Act 2009, I {0}, the Senior Accounting Officer hereby certify that {1} company had appropriate tax accounting arrangements throughout the year.
 certificateReviewUnqualified.rows.companyName = Company name

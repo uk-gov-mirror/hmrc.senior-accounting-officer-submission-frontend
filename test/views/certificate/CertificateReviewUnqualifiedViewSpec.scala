@@ -176,19 +176,19 @@ object CertificateReviewUnqualifiedViewSpec {
   val linkText                = "upload an updated submission template"
   val paragraphs: Seq[String] = Seq(
     "This list is from the certificate details in your submission template. There were 10 companies the SAO was responsible for in a previous financial year.",
-    "If any companies listed are missing or incorrect, upload an updated submission template before continuing.",
+    "If any company’s listed are missing or incorrect, upload an updated submission template before continuing.",
     "In accordance with Paragraph 2, Schedule 46 of the Finance Act 2009, I example sao name, the Senior Accounting Officer hereby certify that 2 companies had appropriate tax accounting arrangements throughout the year."
   )
 
   val paragraphsWithNoData: Seq[String] = Seq(
     "This list is from the certificate details in your submission template. There were 0 companies the SAO was responsible for in a previous financial year.",
-    "If any companies listed are missing or incorrect, upload an updated submission template before continuing.",
+    "If any company’s listed are missing or incorrect, upload an updated submission template before continuing.",
     "In accordance with Paragraph 2, Schedule 46 of the Finance Act 2009, I , the Senior Accounting Officer hereby certify that 0 companies had appropriate tax accounting arrangements throughout the year."
   )
 
   val paragraphsWithOneCompany: Seq[String] = Seq(
     "This list is from the certificate details in your submission template. There was 1 company the SAO was responsible for in a previous financial year.",
-    "If any companies listed are missing or incorrect, upload an updated submission template before continuing.",
+    "If any company’s listed are missing or incorrect, upload an updated submission template before continuing.",
     "In accordance with Paragraph 2, Schedule 46 of the Finance Act 2009, I example sao name, the Senior Accounting Officer hereby certify that 1 company had appropriate tax accounting arrangements throughout the year."
   )
 
